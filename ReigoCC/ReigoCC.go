@@ -46,7 +46,7 @@ func calcAmountPaid(avaiFund float64, amtOwed float64, adjustment string) float6
 	} else {
 		amtPaid = math.Min(avaiFund, amtOwed)
 	}
-	return amtPaid
+	return (math.Round(amtPaid*100) / 100)
 }
 
 func calcAdjustmentType(adjustment string) string {
@@ -187,10 +187,11 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 		//	Liquidation         string `json:"Liquidation"`
 		//	Curtailments        string `json:"Curtailments"`
 		//	ScheduledPrincipal  string `json:"ScheduledPrincipal"`
-		PrincipalPaid string `json:"PrincipalPaid"`
-		Other         string `json:"Other(+)"`
-		Total         string `json:"Total:"`
-		Withdrawals   string `json:"Withdrawals"`
+		PrincipalPaid  string `json:"PrincipalPaid"`
+		Other          string `json:"Other(+)"`
+		Total          string `json:"Total:"`
+		Withdrawals    string `json:"Withdrawals"`
+		SweepedAmounts string `json:"SweepedAmounts"`
 		//	Purchased           string `json:"Purchased"`
 		//	Funded              string `json:"Funded"`
 		//	CapitalizedInterest string `json:"CapitalizedInterest"`
@@ -588,7 +589,7 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	buffer.WriteString(string(co1))
 	buffer.WriteString(",")
 
-	collateralbal2 := CollateralBal{Key: "Beginning Balance", Value1: strconv.FormatFloat(hashofloans, 'f', 0, 64), Value2: strconv.FormatFloat(beginningBal1, 'E', -1, 64)}
+	collateralbal2 := CollateralBal{Key: "Beginning Balance", Value1: strconv.FormatFloat(hashofloans, 'f', 0, 64), Value2: strconv.FormatFloat(beginningBal1, 'f', 2, 64)}
 	co2, _ := json.Marshal(collateralbal2)
 	buffer.WriteString(string(co2))
 	buffer.WriteString(",")
@@ -598,32 +599,32 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	buffer.WriteString(string(co3))
 	buffer.WriteString(",")
 
-	collateralbal4 := CollateralBal{Key: "Purchased", Value1: strconv.FormatFloat(Purchased2, 'f', 0, 64), Value2: strconv.FormatFloat(Purchased1, 'E', -1, 64)}
+	collateralbal4 := CollateralBal{Key: "Purchased", Value1: strconv.FormatFloat(Purchased2, 'f', 0, 64), Value2: strconv.FormatFloat(Purchased1, 'f', 2, 64)}
 	co4, _ := json.Marshal(collateralbal4)
 	buffer.WriteString(string(co4))
 	buffer.WriteString(",")
 
-	collateralbal5 := CollateralBal{Key: "Funded", Value1: strconv.FormatFloat(Funded2, 'f', 0, 64), Value2: strconv.FormatFloat(Funded1, 'E', -1, 64)}
+	collateralbal5 := CollateralBal{Key: "Funded", Value1: strconv.FormatFloat(Funded2, 'f', 0, 64), Value2: strconv.FormatFloat(Funded1, 'f', 2, 64)}
 	co5, _ := json.Marshal(collateralbal5)
 	buffer.WriteString(string(co5))
 	buffer.WriteString(",")
 
-	collateralbal18 := CollateralBal{Key: "Capitalized Interest", Value1: strconv.FormatFloat(CapitalizedInterest2, 'f', 0, 64), Value2: strconv.FormatFloat(CapitalizedInterest1, 'E', -1, 64)}
+	collateralbal18 := CollateralBal{Key: "Capitalized Interest", Value1: strconv.FormatFloat(CapitalizedInterest2, 'f', 0, 64), Value2: strconv.FormatFloat(CapitalizedInterest1, 'f', 2, 64)}
 	co18, _ := json.Marshal(collateralbal18)
 	buffer.WriteString(string(co18))
 	buffer.WriteString(",")
 
-	collateralbal6 := CollateralBal{Key: "Other(+)", Value1: strconv.FormatFloat(OtherPlus2, 'f', 0, 64), Value2: strconv.FormatFloat(OtherPlus1, 'E', -1, 64)}
+	collateralbal6 := CollateralBal{Key: "Other(+)", Value1: strconv.FormatFloat(OtherPlus2, 'f', 0, 64), Value2: strconv.FormatFloat(OtherPlus1, 'f', 2, 64)}
 	co6, _ := json.Marshal(collateralbal6)
 	buffer.WriteString(string(co6))
 	buffer.WriteString(",")
 
-	collateralbal06 := CollateralBal{Key: "Other(+)(non-cash)", Value1: strconv.FormatFloat(OtherPlusNonCash2, 'f', 0, 64), Value2: strconv.FormatFloat(OtherPlusNonCash1, 'E', -1, 64)}
+	collateralbal06 := CollateralBal{Key: "Other(+)(non-cash)", Value1: strconv.FormatFloat(OtherPlusNonCash2, 'f', 0, 64), Value2: strconv.FormatFloat(OtherPlusNonCash1, 'f', 2, 64)}
 	co06, _ := json.Marshal(collateralbal06)
 	buffer.WriteString(string(co06))
 	buffer.WriteString(",")
 
-	collateralbal7 := CollateralBal{Key: "Total:", Value1: strconv.FormatFloat(CTotal2, 'f', 0, 64), Value2: strconv.FormatFloat(CTotal1, 'E', -1, 64)}
+	collateralbal7 := CollateralBal{Key: "Total:", Value1: strconv.FormatFloat(CTotal2, 'f', 0, 64), Value2: strconv.FormatFloat(CTotal1, 'f', 2, 64)}
 	co7, _ := json.Marshal(collateralbal7)
 	buffer.WriteString(string(co7))
 	buffer.WriteString(",")
@@ -633,62 +634,62 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	buffer.WriteString(string(co8))
 	buffer.WriteString(",")
 
-	collateralbal9 := CollateralBal{Key: "Paid In Full", Value1: strconv.FormatFloat(PaidInFull2, 'f', 0, 64), Value2: strconv.FormatFloat(PaidInFull1, 'E', -1, 64)}
+	collateralbal9 := CollateralBal{Key: "Paid In Full", Value1: strconv.FormatFloat(PaidInFull2, 'f', 0, 64), Value2: strconv.FormatFloat(PaidInFull1, 'f', 2, 64)}
 	co9, _ := json.Marshal(collateralbal9)
 	buffer.WriteString(string(co9))
 	buffer.WriteString(",")
 
-	collateralbal10 := CollateralBal{Key: "Sale", Value1: strconv.FormatFloat(Sale2, 'f', 0, 64), Value2: strconv.FormatFloat(Sale1, 'E', -1, 64)}
+	collateralbal10 := CollateralBal{Key: "Sale", Value1: strconv.FormatFloat(Sale2, 'f', 0, 64), Value2: strconv.FormatFloat(Sale1, 'f', 2, 64)}
 	co10, _ := json.Marshal(collateralbal10)
 	buffer.WriteString(string(co10))
 	buffer.WriteString(",")
 
-	collateralbal11 := CollateralBal{Key: "Liquidation", Value1: strconv.FormatFloat(Liquidation2, 'f', 0, 64), Value2: strconv.FormatFloat(Liquidation1, 'E', -1, 64)}
+	collateralbal11 := CollateralBal{Key: "Liquidation", Value1: strconv.FormatFloat(Liquidation2, 'f', 0, 64), Value2: strconv.FormatFloat(Liquidation1, 'f', 2, 64)}
 	co11, _ := json.Marshal(collateralbal11)
 	buffer.WriteString(string(co11))
 	buffer.WriteString(",")
 
-	collateralbal12 := CollateralBal{Key: "Curtailments", Value1: strconv.FormatFloat(Curtailments2, 'f', 0, 64), Value2: strconv.FormatFloat(Curtailments1, 'E', -1, 64)}
+	collateralbal12 := CollateralBal{Key: "Curtailments", Value1: strconv.FormatFloat(Curtailments2, 'f', 0, 64), Value2: strconv.FormatFloat(Curtailments1, 'f', 2, 64)}
 	co12, _ := json.Marshal(collateralbal12)
 	buffer.WriteString(string(co12))
 	buffer.WriteString(",")
 
-	collateralbal13 := CollateralBal{Key: "Realized Losses", Value1: strconv.FormatFloat(RealizedLosses2, 'f', 0, 64), Value2: strconv.FormatFloat(RealizedLosses1, 'E', -1, 64)}
+	collateralbal13 := CollateralBal{Key: "Realized Losses", Value1: strconv.FormatFloat(RealizedLosses2, 'f', 0, 64), Value2: strconv.FormatFloat(RealizedLosses1, 'f', 2, 64)}
 	co13, _ := json.Marshal(collateralbal13)
 	buffer.WriteString(string(co13))
 	buffer.WriteString(",")
 
-	collateralbal17 := CollateralBal{Key: "Scheduled Principal", Value1: strconv.FormatFloat(ScheduldedPrin2, 'f', 0, 64), Value2: strconv.FormatFloat(ScheduldedPrin1, 'E', -1, 64)}
+	collateralbal17 := CollateralBal{Key: "Scheduled Principal", Value1: strconv.FormatFloat(ScheduldedPrin2, 'f', 0, 64), Value2: strconv.FormatFloat(ScheduldedPrin1, 'f', 2, 64)}
 	co17, _ := json.Marshal(collateralbal17)
 	buffer.WriteString(string(co17))
 	buffer.WriteString(",")
 
-	collateralbal14 := CollateralBal{Key: "Other(-)", Value1: strconv.FormatFloat(OtherMinus2, 'f', 0, 64), Value2: strconv.FormatFloat(OtherMinus1, 'E', -1, 64)}
+	collateralbal14 := CollateralBal{Key: "Other(-)", Value1: strconv.FormatFloat(OtherMinus2, 'f', 0, 64), Value2: strconv.FormatFloat(OtherMinus1, 'f', 2, 64)}
 	co14, _ := json.Marshal(collateralbal14)
 	buffer.WriteString(string(co14))
 	buffer.WriteString(",")
 
-	collateralbal19 := CollateralBal{Key: "Other(-)(non-cash)", Value1: strconv.FormatFloat(OtherMinusNoncash2, 'f', 0, 64), Value2: strconv.FormatFloat(OtherMinusNoncash1, 'E', -1, 64)}
+	collateralbal19 := CollateralBal{Key: "Other(-)(non-cash)", Value1: strconv.FormatFloat(OtherMinusNoncash2, 'f', 0, 64), Value2: strconv.FormatFloat(OtherMinusNoncash1, 'f', 2, 64)}
 	co19, _ := json.Marshal(collateralbal19)
 	buffer.WriteString(string(co19))
 	buffer.WriteString(",")
 
-	collateralbal15 := CollateralBal{Key: "Total:", Value1: strconv.FormatFloat(CTotal22, 'f', 0, 64), Value2: strconv.FormatFloat(CTotal11, 'E', -1, 64)}
+	collateralbal15 := CollateralBal{Key: "Total:", Value1: strconv.FormatFloat(CTotal22, 'f', 0, 64), Value2: strconv.FormatFloat(CTotal11, 'f', 2, 64)}
 	co15, _ := json.Marshal(collateralbal15)
 	buffer.WriteString(string(co15))
 	buffer.WriteString(",")
 
-	collateralbal16 := CollateralBal{Key: "Ending Balance", Value1: strconv.FormatFloat(endingbalancehashofloans, 'f', 0, 64), Value2: strconv.FormatFloat(endingbalance, 'E', -1, 64)}
+	collateralbal16 := CollateralBal{Key: "Ending Balance", Value1: strconv.FormatFloat(endingbalancehashofloans, 'f', 0, 64), Value2: strconv.FormatFloat(endingbalance, 'f', 2, 64)}
 	co16, _ := json.Marshal(collateralbal16)
 	buffer.WriteString(string(co16))
 	buffer.WriteString(",")
 
-	collateralbal20 := CollateralBal{Key: "Adjustments for activities post collection period", Value1: "", Value2: strconv.FormatFloat(cAdj, 'E', -1, 64)}
+	collateralbal20 := CollateralBal{Key: "Adjustments for activities post collection period", Value1: "", Value2: strconv.FormatFloat(cAdj, 'f', 2, 64)}
 	co20, _ := json.Marshal(collateralbal20)
 	buffer.WriteString(string(co20))
 	buffer.WriteString(",")
 
-	collateralbal21 := CollateralBal{Key: "Adjusted Ending Balance", Value1: "", Value2: strconv.FormatFloat(FinalCEndingBal, 'E', -1, 64)}
+	collateralbal21 := CollateralBal{Key: "Adjusted Ending Balance", Value1: "", Value2: strconv.FormatFloat(FinalCEndingBal, 'f', 2, 64)}
 	co21, _ := json.Marshal(collateralbal21)
 	buffer.WriteString(string(co21))
 	buffer.WriteString("],")
@@ -699,12 +700,16 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	pOtherPlus, _ := strconv.ParseFloat(smap["Principal Remittance - Other(+)"], 64)
 
 	ptotal := pPrincPaid + pOtherPlus
-
 	pOtherMinus, _ := strconv.ParseFloat(smap["Principal Remittance - Other(-)"], 64)
 	pToAvailableFunds := pbeginningbal
-
-	pwithdrawTotal := pOtherMinus + pToAvailableFunds
-
+	var sweepedAmounts, pwithdrawTotal float64
+	fmt.Println("sweepedAmounts:::::::", sweepedAmounts)
+	if monthval >= "8" && yearval >= "2021" {
+		sweepedAmounts, _ = strconv.ParseFloat(smap["Principal Remittance - Sweeped Amounts"], 64)
+		pwithdrawTotal = sweepedAmounts + pOtherMinus + pToAvailableFunds
+	} else {
+		pwithdrawTotal = pOtherMinus + pToAvailableFunds
+	}
 	pEndingbalance := pbeginningbal + ptotal - pwithdrawTotal
 
 	pAdj, _ := strconv.ParseFloat(args[3], 64)
@@ -712,7 +717,7 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 
 	fmt.Println("FinalPEndingBal", FinalPEndingBal)
 
-	princremmit := PrincipalRemittance{PrincipalRemittance: "", BeginningBalance: strconv.FormatFloat(pbeginningbal, 'E', -1, 64), Deposits: "", PrincipalPaid: strconv.FormatFloat(pPrincPaid, 'E', -1, 64), Other: strconv.FormatFloat(pOtherPlus, 'E', -1, 64), Total: strconv.FormatFloat(ptotal, 'E', -1, 64), Withdrawals: "", Other1: strconv.FormatFloat(pOtherMinus, 'E', -1, 64), ToAvaiFunds: strconv.FormatFloat(pToAvailableFunds, 'E', -1, 64), PTotal: strconv.FormatFloat(pwithdrawTotal, 'E', -1, 64), EndingBalance: strconv.FormatFloat(pEndingbalance, 'E', -1, 64)}
+	princremmit := PrincipalRemittance{PrincipalRemittance: "", BeginningBalance: strconv.FormatFloat(pbeginningbal, 'f', 2, 64), Deposits: "", PrincipalPaid: strconv.FormatFloat(pPrincPaid, 'f', 2, 64), Other: strconv.FormatFloat(pOtherPlus, 'f', 2, 64), Total: strconv.FormatFloat(ptotal, 'f', 2, 64), Withdrawals: "", SweepedAmounts: strconv.FormatFloat(sweepedAmounts, 'f', 2, 64), Other1: strconv.FormatFloat(pOtherMinus, 'f', 2, 64), ToAvaiFunds: strconv.FormatFloat(pToAvailableFunds, 'f', 2, 64), PTotal: strconv.FormatFloat(pwithdrawTotal, 'f', 2, 64), EndingBalance: strconv.FormatFloat(pEndingbalance, 'f', 2, 64)}
 	pc, _ := json.Marshal(princremmit)
 	buffer.WriteString(string(pc))
 	buffer.WriteString(",")
@@ -738,7 +743,7 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 
 	fmt.Println("FinalIEndingBal", FinalIEndingBal)
 
-	intremmit := INTERESTREMITTANCE{INTERESTREMITTANCE: "", BeginningBalance: strconv.FormatFloat(ibeginningbal, 'E', -1, 64), Deposits: "", InterestPaid: strconv.FormatFloat(iInterestpaid, 'E', -1, 64), FeesPaid: strconv.FormatFloat(iFeespaid, 'E', -1, 64), Other: strconv.FormatFloat(iOtherplus, 'E', -1, 64), Total: strconv.FormatFloat(itotal, 'E', -1, 64), Withdrawals: "", ServicerFees: strconv.FormatFloat(iServicerFees, 'E', -1, 64), Other1: strconv.FormatFloat(iOtherMinus, 'E', -1, 64), ToAvaiFunds: strconv.FormatFloat(iToAvailableFunds, 'E', -1, 64), ITotal: strconv.FormatFloat(iwithdrawTotal, 'E', -1, 64), EndingBalance: strconv.FormatFloat(iEndingbalance, 'E', -1, 64)}
+	intremmit := INTERESTREMITTANCE{INTERESTREMITTANCE: "", BeginningBalance: strconv.FormatFloat(ibeginningbal, 'f', 2, 64), Deposits: "", InterestPaid: strconv.FormatFloat(iInterestpaid, 'f', 2, 64), FeesPaid: strconv.FormatFloat(iFeespaid, 'f', 2, 64), Other: strconv.FormatFloat(iOtherplus, 'f', 2, 64), Total: strconv.FormatFloat(itotal, 'f', 2, 64), Withdrawals: "", ServicerFees: strconv.FormatFloat(iServicerFees, 'f', 2, 64), Other1: strconv.FormatFloat(iOtherMinus, 'f', 2, 64), ToAvaiFunds: strconv.FormatFloat(iToAvailableFunds, 'f', 2, 64), ITotal: strconv.FormatFloat(iwithdrawTotal, 'f', 2, 64), EndingBalance: strconv.FormatFloat(iEndingbalance, 'f', 2, 64)}
 	intrem, _ := json.Marshal(intremmit)
 	buffer.WriteString(string(intrem))
 	buffer.WriteString(",")
@@ -765,7 +770,7 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 
 	fmt.Println("FinalAEndingBal", FinalAEndingBal)
 
-	avaiFund := AVAILABLEFUNDS{AVAILABLEFUNDS: "", BeginningBalance: strconv.FormatFloat(aBeginningBalance, 'E', -1, 64), Deposits: "", PrincipalRemittance: strconv.FormatFloat(aPrincipalRemittance, 'E', -1, 64), InterestRemittance: strconv.FormatFloat(aInterestRemittance, 'E', -1, 64), Acc1: strconv.FormatFloat(acc1, 'E', -1, 64), Acc2: strconv.FormatFloat(acc2, 'E', -1, 64), Acc3: strconv.FormatFloat(acc3, 'E', -1, 64), Acct4: strconv.FormatFloat(acc4, 'E', -1, 64), Total: strconv.FormatFloat(aTotal, 'E', -1, 64), Withdrawals: "", ToPriorityofPayments: strconv.FormatFloat(aToPoP, 'E', -1, 64), ATotal: strconv.FormatFloat(aWithdrawTotal, 'E', -1, 64), EndingBalance: strconv.FormatFloat(aEndingbalance, 'E', -1, 64)}
+	avaiFund := AVAILABLEFUNDS{AVAILABLEFUNDS: "", BeginningBalance: strconv.FormatFloat(aBeginningBalance, 'f', 2, 64), Deposits: "", PrincipalRemittance: strconv.FormatFloat(aPrincipalRemittance, 'f', 2, 64), InterestRemittance: strconv.FormatFloat(aInterestRemittance, 'f', 2, 64), Acc1: strconv.FormatFloat(acc1, 'f', 2, 64), Acc2: strconv.FormatFloat(acc2, 'f', 2, 64), Acc3: strconv.FormatFloat(acc3, 'f', 2, 64), Acct4: strconv.FormatFloat(acc4, 'f', 2, 64), Total: strconv.FormatFloat(aTotal, 'f', 2, 64), Withdrawals: "", ToPriorityofPayments: strconv.FormatFloat(aToPoP, 'f', 2, 64), ATotal: strconv.FormatFloat(aWithdrawTotal, 'f', 2, 64), EndingBalance: strconv.FormatFloat(aEndingbalance, 'f', 2, 64)}
 	avai, _ := json.Marshal(avaiFund)
 	buffer.WriteString(string(avai))
 	buffer.WriteString(",")
@@ -778,7 +783,7 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	DepositTotal := RevolvFromPriorityofPayments
 
 	RevolvToPurchaseOfAddiLoans, _ := strconv.ParseFloat(args[130], 64)
-	RevolvToAvaiFund := 0.00 //formula not yet given
+	RevolvToAvaiFund, _ := strconv.ParseFloat(args[139], 64) //:= 0.00 //formula not yet given
 	WithdrawTotal := RevolvToAvaiFund + RevolvToPurchaseOfAddiLoans
 
 	RevolvEndingBalance := RevolvAccBeginBln + DepositTotal - WithdrawTotal
@@ -787,7 +792,7 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	FinalRevolvEndingBal := RevolvEndingBalance + RevolvAdj
 	fmt.Println(FinalRevolvEndingBal)
 
-	rev := RevolvingPerReinvAccts{RevolvingPerReinvAcct: "", BeginBln: strconv.FormatFloat(RevolvAccBeginBln, 'E', -1, 64), Deposits: "", FromPriorityofPayments: strconv.FormatFloat(RevolvFromPriorityofPayments, 'E', -1, 64), DepositTotal: strconv.FormatFloat(DepositTotal, 'E', -1, 64), Withdrawals: "", ToPurchaseAdditionalLoans: strconv.FormatFloat(RevolvToPurchaseOfAddiLoans, 'E', -1, 64), ToAvaiFunds: strconv.FormatFloat(RevolvToAvaiFund, 'E', -1, 64), Total: strconv.FormatFloat(WithdrawTotal, 'E', -1, 64), EndingBalance: strconv.FormatFloat(RevolvEndingBalance, 'E', -1, 64), RAdj: strconv.FormatFloat(RevolvAdj, 'E', -1, 64), EndingBalance1: strconv.FormatFloat(FinalRevolvEndingBal, 'E', -1, 64)}
+	rev := RevolvingPerReinvAccts{RevolvingPerReinvAcct: "", BeginBln: strconv.FormatFloat(RevolvAccBeginBln, 'f', 2, 64), Deposits: "", FromPriorityofPayments: strconv.FormatFloat(RevolvFromPriorityofPayments, 'f', 2, 64), DepositTotal: strconv.FormatFloat(DepositTotal, 'f', 2, 64), Withdrawals: "", ToPurchaseAdditionalLoans: strconv.FormatFloat(RevolvToPurchaseOfAddiLoans, 'f', 2, 64), ToAvaiFunds: strconv.FormatFloat(RevolvToAvaiFund, 'f', 2, 64), Total: strconv.FormatFloat(WithdrawTotal, 'f', 2, 64), EndingBalance: strconv.FormatFloat(RevolvEndingBalance, 'f', 2, 64), RAdj: strconv.FormatFloat(RevolvAdj, 'f', 2, 64), EndingBalance1: strconv.FormatFloat(FinalRevolvEndingBal, 'f', 2, 64)}
 	a1, _ := json.Marshal(rev)
 	buffer.WriteString(string(a1))
 	buffer.WriteString(",")
@@ -797,7 +802,7 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	RFromPriorityofPayments, _ := strconv.ParseFloat(args[120], 64) //From pop - hardcoded for now
 	ResDtotal := RFromPriorityofPayments
 
-	RToAvaiFunds := 0.00 //formula not yet given
+	RToAvaiFunds, _ := strconv.ParseFloat(args[140], 64) // := 0.00 //formula not yet given
 	ResWtotal := RToAvaiFunds
 	ResEndingBln := ResBeginBln + ResDtotal - ResWtotal
 
@@ -806,7 +811,7 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 
 	fmt.Println("FinalResEndingBal", FinalResEndingBal)
 
-	res := ReserveAccount{RESERVEACCOUNT: "", Deposits: "", BeginningBalance: strconv.FormatFloat(ResBeginBln, 'E', -1, 64), FromPriorityofPayments: strconv.FormatFloat(RFromPriorityofPayments, 'E', -1, 64), Total: strconv.FormatFloat(ResDtotal, 'E', -1, 64), Withdrawals: "", ToAvaiFunds: strconv.FormatFloat(RToAvaiFunds, 'E', -1, 64), RTotal: strconv.FormatFloat(ResWtotal, 'E', -1, 64), EndingBalance: strconv.FormatFloat(ResEndingBln, 'E', -1, 64), ResAdj: strconv.FormatFloat(ResAdj, 'E', -1, 64), EndingBalance1: strconv.FormatFloat(FinalResEndingBal, 'E', -1, 64)}
+	res := ReserveAccount{RESERVEACCOUNT: "", Deposits: "", BeginningBalance: strconv.FormatFloat(ResBeginBln, 'f', 2, 64), FromPriorityofPayments: strconv.FormatFloat(RFromPriorityofPayments, 'f', 2, 64), Total: strconv.FormatFloat(ResDtotal, 'f', 2, 64), Withdrawals: "", ToAvaiFunds: strconv.FormatFloat(RToAvaiFunds, 'f', 2, 64), RTotal: strconv.FormatFloat(ResWtotal, 'f', 2, 64), EndingBalance: strconv.FormatFloat(ResEndingBln, 'f', 2, 64), ResAdj: strconv.FormatFloat(ResAdj, 'f', 2, 64), EndingBalance1: strconv.FormatFloat(FinalResEndingBal, 'f', 2, 64)}
 	re1, _ := json.Marshal(res)
 	buffer.WriteString(string(re1))
 	buffer.WriteString(",")
@@ -816,7 +821,7 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	AssetFromPriorityofPayments, _ := strconv.ParseFloat(args[121], 64) //From pop - hardcoded for now
 	AssetDtotal := AssetFromPriorityofPayments
 
-	AssetToAvaiFunds := 0.00 //formula not yet given
+	AssetToAvaiFunds, _ := strconv.ParseFloat(args[141], 64) // := 0.00 //formula not yet given
 	AssetWtotal := AssetToAvaiFunds
 	AssetEndingBln := AssetBeginBln + AssetDtotal - AssetWtotal
 
@@ -825,17 +830,17 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 
 	fmt.Println("FinalAssetEndingBal", FinalAssetEndingBal)
 
-	Asse := AssetManagementAccount{ASSETMANAGEMENTACCOUNT: "", Deposits: "", BeginningBalance: strconv.FormatFloat(AssetBeginBln, 'E', -1, 64), FromPriorityofPayments: strconv.FormatFloat(AssetFromPriorityofPayments, 'E', -1, 64), Total: strconv.FormatFloat(AssetDtotal, 'E', -1, 64), Withdrawals: "", ToAvaiFunds: strconv.FormatFloat(AssetToAvaiFunds, 'E', -1, 64), ATotal: strconv.FormatFloat(AssetWtotal, 'E', -1, 64), EndingBalance: strconv.FormatFloat(AssetEndingBln, 'E', -1, 64), AssetAdj: strconv.FormatFloat(AssetAdj, 'E', -1, 64), EndingBalance1: strconv.FormatFloat(FinalAssetEndingBal, 'E', -1, 64)}
+	Asse := AssetManagementAccount{ASSETMANAGEMENTACCOUNT: "", Deposits: "", BeginningBalance: strconv.FormatFloat(AssetBeginBln, 'f', 2, 64), FromPriorityofPayments: strconv.FormatFloat(AssetFromPriorityofPayments, 'f', 2, 64), Total: strconv.FormatFloat(AssetDtotal, 'f', 2, 64), Withdrawals: "", ToAvaiFunds: strconv.FormatFloat(AssetToAvaiFunds, 'f', 2, 64), ATotal: strconv.FormatFloat(AssetWtotal, 'f', 2, 64), EndingBalance: strconv.FormatFloat(AssetEndingBln, 'f', 2, 64), AssetAdj: strconv.FormatFloat(AssetAdj, 'f', 2, 64), EndingBalance1: strconv.FormatFloat(FinalAssetEndingBal, 'f', 2, 64)}
 	As1, _ := json.Marshal(Asse)
 	buffer.WriteString(string(As1))
-	//buffer.WriteString(",")
+	buffer.WriteString(",")
 
 	//Place holder calcs
 	PlBeginBln, _ := strconv.ParseFloat(args[18], 64)
 	PlFromPriorityofPayments, _ := strconv.ParseFloat(args[122], 64) //From pop - hardcoded for now
 	PlDtotal := PlFromPriorityofPayments
 
-	PlToAvaiFunds := 0.00 //formula not yet given
+	PlToAvaiFunds, _ := strconv.ParseFloat(args[142], 64) // := 0.00 //formula not yet given
 	PlWtotal := PlToAvaiFunds
 	PlEndingBln := PlBeginBln + PlDtotal - PlWtotal
 
@@ -844,10 +849,10 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 
 	fmt.Println("FinalPlEndingBal", FinalPlEndingBal)
 
-	place := PlaceHolder{"", strconv.FormatFloat(PlBeginBln, 'E', -1, 64), "", strconv.FormatFloat(PlFromPriorityofPayments, 'E', -1, 64), strconv.FormatFloat(PlDtotal, 'E', -1, 64), "", strconv.FormatFloat(PlToAvaiFunds, 'E', -1, 64), strconv.FormatFloat(PlWtotal, 'E', -1, 64), strconv.FormatFloat(PlEndingBln, 'E', -1, 64), strconv.FormatFloat(PlAdj, 'E', -1, 64), strconv.FormatFloat(FinalPlEndingBal, 'E', -1, 64)}
+	place := PlaceHolder{"", strconv.FormatFloat(PlBeginBln, 'f', 2, 64), "", strconv.FormatFloat(PlFromPriorityofPayments, 'f', 2, 64), strconv.FormatFloat(PlDtotal, 'f', 2, 64), "", strconv.FormatFloat(PlToAvaiFunds, 'f', 2, 64), strconv.FormatFloat(PlWtotal, 'f', 2, 64), strconv.FormatFloat(PlEndingBln, 'f', 2, 64), strconv.FormatFloat(PlAdj, 'f', 2, 64), strconv.FormatFloat(FinalPlEndingBal, 'f', 2, 64)}
 	pl1, _ := json.Marshal(place)
 	fmt.Println(string(pl1))
-	//buffer.WriteString(string(pl1))
+	buffer.WriteString(string(pl1))
 	buffer.WriteString("]")
 
 	//Fee and expenses calculations
@@ -918,47 +923,6 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	isServicerDefault := strings.ToUpper(args[36])
 	isEarlyRedemption := strings.ToUpper(args[37])
 
-	var isAmortEvent string
-	if isEventDefault == "TRUE" || isServicerDefault == "TRUE" || isEarlyRedemption == "TRUE" {
-		isAmortEvent = "TRUE"
-	} else {
-		isAmortEvent = "FALSE"
-	}
-
-	var current1, current2 float64
-
-	K280, _ := strconv.ParseFloat(args[38], 64)
-	L280, _ := strconv.ParseFloat(args[39], 64)
-	M280, _ := strconv.ParseFloat(args[40], 64)
-
-	K281, _ := strconv.ParseFloat(args[41], 64)
-	L281, _ := strconv.ParseFloat(args[42], 64)
-	M281, _ := strconv.ParseFloat(args[43], 64)
-
-	if monthval == "6" && yearval == "2021" {
-		current1 = K280
-		current2 = K281
-	} else if monthval == "7" && yearval == "2021" {
-		current1 = ((K280 + L280) / 2)
-		current2 = ((K281 + L281) / 2)
-	} else {
-		current1 = ((K280 + L280 + M280) / 3)
-		current2 = ((K281 + L281 + M281) / 3)
-	}
-
-	limit1 := 15.00
-	limit2 := 3.00
-	limit3 := 3.0
-
-	limittype1 := "MAX"
-	limittype2 := "MAX"
-	limittype3 := "MIN"
-
-	var status1 string
-	var status2 string
-	var status3 string
-
-	K307 := RevolvAccBeginBln + AssetBeginBln + beginningBal1
 	origBln1, _ := strconv.ParseFloat(args[44], 64)
 	origBln2, _ := strconv.ParseFloat(args[45], 64)
 	origBln3, _ := strconv.ParseFloat(args[46], 64)
@@ -987,6 +951,95 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 		BeginBln3 = bvalue3
 		BeginBln4 = bvalue4
 	}
+	var K50 string
+	if monthval >= "8" && yearval >= "2021" {
+		K50 = "FALSE"
+	} else {
+		K50 = "TRUE"
+	}
+
+	k51, _ := strconv.ParseFloat(args[55], 64) //node
+
+	t := Date(int(y1), int(m1), 0)
+	K47 := float64(t.Day())
+	K48 := float64(365)
+	K51 := k51 * K47 / K48 * 12
+
+	TotalCDue := CDue1 + CDue2 + CDue3 + CDue4 + CDue5 + CDue6 + CDue7 + CDue8 + CDue9 + CDue10 + CDue11 + CDue12 + CDue13 + CDue14
+
+	K52 := CDue1 + CDue2 + CDue3 + CDue4 + CDue5 + iServicerFees
+	K53 := K51 - K52*12
+	denoo1, _ := strconv.ParseFloat(args[56], 64) //node
+	L53 := (K53 / denoo1) * 100
+
+	J56 := 3.220
+	J57 := 5.470
+	J58 := 0.00
+	J65 := 0.100
+
+	var irate1, irate2, irate3, irate4 float64
+	if K50 == "TRUE" {
+		irate1 = math.Min(J56, L53)
+		irate2 = math.Min(J57, L53)
+		irate3 = math.Min(J58, L53)
+		irate4 = math.Min(J65, L53)
+	} else {
+		irate1 = J56
+		irate2 = J57
+		irate3 = J58
+		irate4 = J65
+	}
+
+	var current1, current2 float64
+	var K280 float64
+	if monthval < "8" && yearval == "2021" {
+		K280, _ = strconv.ParseFloat(args[38], 64)
+	} else {
+		K280num, _ := strconv.ParseFloat(args[38], 64)
+		K280deno := ((BeginBln1 * (irate1 / 100)) + (BeginBln2 * (irate2 / 100))) / (BeginBln1 + BeginBln2)
+		fmt.Println("K280deno:::::", K280deno)
+		K280 = (K280num / K280deno) * 100
+	}
+	fmt.Println("K280:::::", K280)
+	L280, _ := strconv.ParseFloat(args[39], 64)
+	M280, _ := strconv.ParseFloat(args[40], 64)
+
+	K281, _ := strconv.ParseFloat(args[41], 64)
+	L281, _ := strconv.ParseFloat(args[42], 64)
+	M281, _ := strconv.ParseFloat(args[43], 64)
+
+	if monthval == "6" && yearval == "2021" {
+		current1 = K280 / 100
+		current2 = K281 / 100
+	} else if monthval == "7" && yearval == "2021" {
+		current1 = ((K280/100 + L280/100) / 2)
+		current2 = ((K281/100 + L281/100) / 2)
+	} else {
+		current1 = ((K280/100 + L280/100 + M280/100) / 3)
+		current2 = ((K281/100 + L281/100 + M281/100) / 3)
+	}
+
+	var limit1, limit2, limit3 float64
+	var limittype1, limittype2, limittype3 string
+	limit3 = 3.0
+	limittype2 = "MAX"
+	limittype3 = "MIN"
+
+	if monthval < "8" && yearval == "2021" {
+		limit1 = 15.00
+		limit2 = 3.00
+		limittype1 = "MAX"
+	} else {
+		limit1 = 125.00
+		limit2 = 12.50
+		limittype1 = "MIN"
+	}
+
+	var status1 string
+	var status2 string
+	var status3 string
+
+	K307 := RevolvAccBeginBln + AssetBeginBln + beginningBal1
 
 	test1 := K307 - (BeginBln1 + BeginBln2)
 	sumBeginningBalance := BeginBln1 + BeginBln2 + BeginBln3 + BeginBln4
@@ -1041,10 +1094,21 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 		isTriggerEvent = "FALSE"
 	}
 
+	var isAmortEvent string
+	if isEventDefault == "TRUE" || isServicerDefault == "TRUE" || isTriggerEvent == "TRUE" {
+		isAmortEvent = "TRUE"
+	} else {
+		isAmortEvent = "FALSE"
+	}
+
 	date1 := "12/25/2023"
 	date2 := "6/25/2023"
-
-	K303 := RevolvEndingBalance + AssetEndingBln + aEndingbalance + endingbalance
+	var K303 float64
+	if monthval < "8" && yearval == "2021" {
+		K303 = RevolvEndingBalance + AssetEndingBln + aEndingbalance + endingbalance
+	} else {
+		K303 = RevolvEndingBalance + AssetEndingBln + aEndingbalance*0 + endingbalance + ptotal
+	}
 
 	K311 := 20.00
 	K312 := 17.00
@@ -1128,17 +1192,17 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	buffer.WriteString(string(de))
 	buffer.WriteString(",")
 	///////
-	dealevent1 := DealEvents{Key: "the three-month trailing average ratio of the weighted average Mortgage Interest Rate of the Whole Mortgage Loans to the weighted average Note Rate of the Class A Notes, in each case as of the related Calculation Date, is less than 1.25:1;", Value1: strconv.FormatFloat(current1*100, 'E', -1, 64) + "%", Value2: strconv.FormatFloat(limit1, 'E', -1, 64) + "%", Value3: limittype1, Value4: status1}
+	dealevent1 := DealEvents{Key: "the three-month trailing average ratio of the weighted average Mortgage Interest Rate of the Whole Mortgage Loans to the weighted average Note Rate of the Class A Notes, in each case as of the related Calculation Date, is less than 1.25:1;", Value1: strconv.FormatFloat(current1*100, 'f', 2, 64) + "%", Value2: strconv.FormatFloat(limit1, 'f', 2, 64) + "%", Value3: limittype1, Value4: status1}
 	de1, _ := json.Marshal(dealevent1)
 	buffer.WriteString(string(de1))
 	buffer.WriteString(",")
 	///////
-	dealevent2 := DealEvents{Key: "the three-month trailing average 60+ Day Delinquency Rate for such Calculation Date and the Calculation Date for each of the two preceding Collection Periods is greater than 12.50%; or	", Value1: strconv.FormatFloat(current2*100, 'E', -1, 64) + "%", Value2: strconv.FormatFloat(limit2, 'E', -1, 64) + "%", Value3: limittype2, Value4: status2}
+	dealevent2 := DealEvents{Key: "the three-month trailing average 60+ Day Delinquency Rate for such Calculation Date and the Calculation Date for each of the two preceding Collection Periods is greater than 12.50%; or	", Value1: strconv.FormatFloat(current2*100, 'f', 2, 64) + "%", Value2: strconv.FormatFloat(limit2, 'f', 2, 64) + "%", Value3: limittype2, Value4: status2}
 	de2, _ := json.Marshal(dealevent2)
 	buffer.WriteString(string(de2))
 	buffer.WriteString(",")
 	////////
-	dealevent3 := DealEvents{Key: "the Overcollateralization Amount for the related Payment Date is less than 3.0% of the aggregate Note Amount of the Notes", Value1: strconv.FormatFloat(current3*100, 'E', -1, 64) + "%", Value2: strconv.FormatFloat(limit3, 'E', -1, 64) + "%", Value3: limittype3, Value4: status3}
+	dealevent3 := DealEvents{Key: "the Overcollateralization Amount for the related Payment Date is less than 3.0% of the aggregate Note Amount of the Notes", Value1: strconv.FormatFloat(current3*100, 'f', 2, 64) + "%", Value2: strconv.FormatFloat(limit3, 'f', 2, 64) + "%", Value3: limittype3, Value4: status3}
 	de3, _ := json.Marshal(dealevent3)
 	buffer.WriteString(string(de3))
 	buffer.WriteString("]")
@@ -1184,17 +1248,17 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	buffer.WriteString(string(de6))
 	buffer.WriteString(",")
 	///////
-	dealevent7 := DealEvents2{Key: "TEST - Overcollateralization Amount", Value1: strconv.FormatFloat(test1, 'E', -1, 64), Value2: ""}
+	dealevent7 := DealEvents2{Key: "TEST - Overcollateralization Amount", Value1: strconv.FormatFloat(test1, 'f', 2, 64), Value2: ""}
 	de7, _ := json.Marshal(dealevent7)
 	buffer.WriteString(string(de7))
 	buffer.WriteString(",")
 	///////
-	dealevent8 := DealEvents2{Key: "TEST - Class A-1 Credit Enhancement Percentage", Value1: strconv.FormatFloat(test2*100, 'E', -1, 64) + "%", Value2: ""}
+	dealevent8 := DealEvents2{Key: "TEST - Class A-1 Credit Enhancement Percentage", Value1: strconv.FormatFloat(test2*100, 'f', 2, 64) + "%", Value2: ""}
 	de8, _ := json.Marshal(dealevent8)
 	buffer.WriteString(string(de8))
 	buffer.WriteString(",")
 	///////
-	dealevent10 := DealEvents2{Key: "TEST - Class A Target Amount", Value1: strconv.FormatFloat(test3, 'E', -1, 64), Value2: ""}
+	dealevent10 := DealEvents2{Key: "TEST - Class A Target Amount", Value1: strconv.FormatFloat(test3, 'f', 2, 64), Value2: ""}
 	de10, _ := json.Marshal(dealevent10)
 	buffer.WriteString(string(de10))
 	buffer.WriteString(",")
@@ -1204,17 +1268,17 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	buffer.WriteString(string(de1000))
 	buffer.WriteString(",")
 	/////////////
-	dealevent11 := DealEvents2{Key: "TEST - Optimal Principal Distribution Amount", Value1: strconv.FormatFloat(test5, 'E', -1, 64), Value2: ""}
+	dealevent11 := DealEvents2{Key: "TEST - Optimal Principal Distribution Amount", Value1: strconv.FormatFloat(test5, 'f', 2, 64), Value2: ""}
 	de11, _ := json.Marshal(dealevent11)
 	buffer.WriteString(string(de11))
 	buffer.WriteString(",")
 	/////////////
-	dealevent21 := DealEvents2{Key: "ACCOUNT - Optimal Revolving Period Reinvestment Account Balance", Value1: strconv.FormatFloat(account1, 'E', -1, 64), Value2: ""}
+	dealevent21 := DealEvents2{Key: "ACCOUNT - Optimal Revolving Period Reinvestment Account Balance", Value1: strconv.FormatFloat(account1, 'f', 2, 64), Value2: ""}
 	de21, _ := json.Marshal(dealevent21)
 	buffer.WriteString(string(de21))
 	buffer.WriteString(",")
 	/////////////
-	dealevent22 := DealEvents2{Key: "ACCOUNT - Required Reserve Account Balance", Value1: strconv.FormatFloat(account2, 'E', -1, 64), Value2: ""}
+	dealevent22 := DealEvents2{Key: "ACCOUNT - Required Reserve Account Balance", Value1: strconv.FormatFloat(account2, 'f', 2, 64), Value2: ""}
 	de22, _ := json.Marshal(dealevent22)
 	buffer.WriteString(string(de22))
 	buffer.WriteString("]")
@@ -1252,13 +1316,14 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	buffer.WriteString(",\"PriorityOfPayments\":[")
 	var arr []float64
 	avaiFund1 := c + cc1 + cc2 + cc3 + cc4 + cc5
+	avaiFund1 = math.Round(avaiFund1*100) / 100
 	amtOwed1 := 0.00 //to be fixed
 	adjustment1 := ""
 	adjustmentType1 := calcAdjustmentType(adjustment1)
 	amtPaid1 := calcAmountPaid(avaiFund1, amtOwed1, adjustment1)
 	arr = append(arr, amtPaid1)
 
-	pop1 := PriorityOfPayments{Key: "Beginning Balance", AvailableFunds: strconv.FormatFloat(avaiFund1, 'E', -1, 64), AmountOwed: strconv.FormatFloat(amtOwed1, 'E', -1, 64), Adjustment: adjustment1, AdjustmentType: adjustmentType1, AmountPaid: strconv.FormatFloat(amtPaid1, 'E', -1, 64)}
+	pop1 := PriorityOfPayments{Key: "Beginning Balance", AvailableFunds: strconv.FormatFloat(avaiFund1, 'f', 2, 64), AmountOwed: strconv.FormatFloat(amtOwed1, 'f', 2, 64), Adjustment: adjustment1, AdjustmentType: adjustmentType1, AmountPaid: strconv.FormatFloat(amtPaid1, 'f', 2, 64)}
 	p1, _ := json.Marshal(pop1)
 	buffer.WriteString(string(p1))
 	buffer.WriteString(",")
@@ -1270,7 +1335,7 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	amtPaid2 := calcAmountPaid(avaiFund2, amtOwed2, adjustment2)
 	arr = append(arr, amtPaid2)
 
-	pop2 := PriorityOfPayments{Key: "first, pro rata, to the Owner Trustee, the Indenture Trustee, the Paying Agent, the Custodian, the Administrator and the Asset Manager, the Owner Trustee Fee, the Indenture Trustee Fee, the Custodial Fee, the Paying Agent Fee, the Administrator Fee and the Asset Manager Fee, respectively, and any related expenses and indemnification amounts due and owing to the Owner Trustee, the Indenture Trustee, the Paying Agent, the Note Registrar, the Custodian, the Administrator and the Asset Manager (the Transaction Party Expenses) up to the Annual Cap;	Fees", AvailableFunds: strconv.FormatFloat(avaiFund2, 'E', -1, 64), AmountOwed: strconv.FormatFloat(amtOwed2, 'E', -1, 64), Adjustment: adjustment2, AdjustmentType: adjustmentType2, AmountPaid: strconv.FormatFloat(amtPaid2, 'E', -1, 64)}
+	pop2 := PriorityOfPayments{Key: "first, pro rata, to the Owner Trustee, the Indenture Trustee, the Paying Agent, the Custodian, the Administrator and the Asset Manager, the Owner Trustee Fee, the Indenture Trustee Fee, the Custodial Fee, the Paying Agent Fee, the Administrator Fee and the Asset Manager Fee, respectively, and any related expenses and indemnification amounts due and owing to the Owner Trustee, the Indenture Trustee, the Paying Agent, the Note Registrar, the Custodian, the Administrator and the Asset Manager (the Transaction Party Expenses) up to the Annual Cap;	Fees", AvailableFunds: strconv.FormatFloat(avaiFund2, 'f', 2, 64), AmountOwed: strconv.FormatFloat(amtOwed2, 'f', 2, 64), Adjustment: adjustment2, AdjustmentType: adjustmentType2, AmountPaid: strconv.FormatFloat(amtPaid2, 'f', 2, 64)}
 	p2, _ := json.Marshal(pop2)
 	buffer.WriteString(string(p2))
 	buffer.WriteString(",")
@@ -1283,13 +1348,13 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	if isEventDefault == "TRUE" || isEarlyRedemption == "TRUE" {
 		adjustment3 = ""
 	} else {
-		adjustment3 = strconv.FormatFloat(M272, 'E', -1, 64)
+		adjustment3 = strconv.FormatFloat(M272, 'f', 2, 64)
 	}
 	adjustmentType3 := calcAdjustmentType(adjustment3)
 	amtPaid3 := calcAmountPaid(avaiFund3, amtOwed3, adjustment3)
 	arr = append(arr, amtPaid3)
 
-	pop3 := PriorityOfPayments{Key: "Expenses", AvailableFunds: strconv.FormatFloat(avaiFund3, 'E', -1, 64), AmountOwed: strconv.FormatFloat(amtOwed3, 'E', -1, 64), Adjustment: adjustment3, AdjustmentType: adjustmentType3, AmountPaid: strconv.FormatFloat(amtPaid3, 'E', -1, 64)}
+	pop3 := PriorityOfPayments{Key: "Expenses", AvailableFunds: strconv.FormatFloat(avaiFund3, 'f', 2, 64), AmountOwed: strconv.FormatFloat(amtOwed3, 'f', 2, 64), Adjustment: adjustment3, AdjustmentType: adjustmentType3, AmountPaid: strconv.FormatFloat(amtPaid3, 'f', 2, 64)}
 	p3, _ := json.Marshal(pop3)
 	buffer.WriteString(string(p3))
 	buffer.WriteString(",")
@@ -1301,7 +1366,7 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	amtPaid4 := amtPaid2 + amtPaid3 //calcAmountPaid(avaiFund4, amtOwed4, adjustment4)
 	//arr = append(arr, amtPaid4)
 
-	pop4 := PriorityOfPayments{Key: "Total:", AvailableFunds: strconv.FormatFloat(avaiFund4, 'E', -1, 64), AmountOwed: strconv.FormatFloat(amtOwed4, 'E', -1, 64), Adjustment: adjustment4, AdjustmentType: adjustmentType4, AmountPaid: strconv.FormatFloat(amtPaid4, 'E', -1, 64)}
+	pop4 := PriorityOfPayments{Key: "Total:", AvailableFunds: strconv.FormatFloat(avaiFund4, 'f', 2, 64), AmountOwed: strconv.FormatFloat(amtOwed4, 'f', 2, 64), Adjustment: adjustment4, AdjustmentType: adjustmentType4, AmountPaid: strconv.FormatFloat(amtPaid4, 'f', 2, 64)}
 	p4, _ := json.Marshal(pop4)
 	buffer.WriteString(string(p4))
 	buffer.WriteString(",")
@@ -1313,7 +1378,7 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	amtPaid5 := calcAmountPaid(avaiFund5, amtOwed5, adjustment5)
 	arr = append(arr, amtPaid5)
 
-	pop5 := PriorityOfPayments{Key: "second, pro rata, to the Servicer and any Additional Servicers, any unreimbursed Servicing Advances, Servicing Expenses, costs and liabilities by and reimbursable to the Servicer or such Additional Servicer pursuant to the Servicing Agreement or related additional servicing agreement, in each case, to the extent that the Servicer or related Additional Servicer has not already reimbursed itself or paid itself for such amounts from Collections;	Expenses", AvailableFunds: strconv.FormatFloat(avaiFund5, 'E', -1, 64), AmountOwed: strconv.FormatFloat(amtOwed5, 'E', -1, 64), Adjustment: adjustment5, AdjustmentType: adjustmentType5, AmountPaid: strconv.FormatFloat(amtPaid5, 'E', -1, 64)}
+	pop5 := PriorityOfPayments{Key: "second, pro rata, to the Servicer and any Additional Servicers, any unreimbursed Servicing Advances, Servicing Expenses, costs and liabilities by and reimbursable to the Servicer or such Additional Servicer pursuant to the Servicing Agreement or related additional servicing agreement, in each case, to the extent that the Servicer or related Additional Servicer has not already reimbursed itself or paid itself for such amounts from Collections;	Expenses", AvailableFunds: strconv.FormatFloat(avaiFund5, 'f', 2, 64), AmountOwed: strconv.FormatFloat(amtOwed5, 'f', 2, 64), Adjustment: adjustment5, AdjustmentType: adjustmentType5, AmountPaid: strconv.FormatFloat(amtPaid5, 'f', 2, 64)}
 	p5, _ := json.Marshal(pop5)
 	buffer.WriteString(string(p5))
 	buffer.WriteString(",")
@@ -1325,45 +1390,11 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	amtPaid6 := calcAmountPaid(avaiFund6, amtOwed6, adjustment6)
 	arr = append(arr, amtPaid6)
 
-	pop6 := PriorityOfPayments{Key: "third, pro rata, to the Servicer and any Additional Servicers, the Servicing Fee and related additional servicing fee, to the extent not otherwise retained by the Servicer pursuant to the Servicing Agreement or the related Additional Servicer pursuant to the applicable additional servicing agreement; Fees", AvailableFunds: strconv.FormatFloat(avaiFund6, 'E', -1, 64), AmountOwed: strconv.FormatFloat(amtOwed6, 'E', -1, 64), Adjustment: adjustment6, AdjustmentType: adjustmentType6, AmountPaid: strconv.FormatFloat(amtPaid6, 'E', -1, 64)}
+	pop6 := PriorityOfPayments{Key: "third, pro rata, to the Servicer and any Additional Servicers, the Servicing Fee and related additional servicing fee, to the extent not otherwise retained by the Servicer pursuant to the Servicing Agreement or the related Additional Servicer pursuant to the applicable additional servicing agreement; Fees", AvailableFunds: strconv.FormatFloat(avaiFund6, 'f', 2, 64), AmountOwed: strconv.FormatFloat(amtOwed6, 'f', 2, 64), Adjustment: adjustment6, AdjustmentType: adjustmentType6, AmountPaid: strconv.FormatFloat(amtPaid6, 'f', 2, 64)}
 	p6, _ := json.Marshal(pop6)
 	buffer.WriteString(string(p6))
 	buffer.WriteString(",")
 	///////////////////////////
-	K50 := "TRUE"
-
-	k51, _ := strconv.ParseFloat(args[55], 64) //node
-
-	t := Date(int(y1), int(m1), 0)
-	K47 := float64(t.Day())
-	K48 := float64(365)
-	K51 := k51 * K47 / K48 * 12
-
-	TotalCDue := CDue1 + CDue2 + CDue3 + CDue4 + CDue5 + CDue6 + CDue7 + CDue8 + CDue9 + CDue10 + CDue11 + CDue12 + CDue13 + CDue14
-
-	K52 := CDue1 + CDue2 + CDue3 + CDue4 + CDue5 + iServicerFees
-	K53 := K51 - K52*12
-
-	denoo1, _ := strconv.ParseFloat(args[56], 64) //node
-	L53 := (K53 / denoo1) * 100
-
-	J56 := 3.220
-	J57 := 5.470
-	J58 := 0.00
-	J65 := 0.100
-
-	var irate1, irate2, irate3, irate4 float64
-	if K50 == "TRUE" {
-		irate1 = math.Min(J56, L53)
-		irate2 = math.Min(J57, L53)
-		irate3 = math.Min(J58, L53)
-		irate4 = math.Min(J65, L53)
-	} else {
-		irate1 = J56
-		irate2 = J57
-		irate3 = J58
-		irate4 = J65
-	}
 
 	c8, _ := strconv.ParseFloat(args[57], 64)
 	ipBeginBln4 := beginningBal1
@@ -1387,7 +1418,7 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	amtPaid7 := calcAmountPaid(avaiFund7, amtOwed7, adjustment7)
 	arr = append(arr, amtPaid7)
 
-	pop7 := PriorityOfPayments{Key: "fourth, to the Class AIOS Notes, to pay the Interest Payment Amount thereon;", AvailableFunds: strconv.FormatFloat(avaiFund7, 'E', -1, 64), AmountOwed: strconv.FormatFloat(amtOwed7, 'E', -1, 64), Adjustment: adjustment7, AdjustmentType: adjustmentType7, AmountPaid: strconv.FormatFloat(amtPaid7, 'E', -1, 64)}
+	pop7 := PriorityOfPayments{Key: "fourth, to the Class AIOS Notes, to pay the Interest Payment Amount thereon;", AvailableFunds: strconv.FormatFloat(avaiFund7, 'f', 2, 64), AmountOwed: strconv.FormatFloat(amtOwed7, 'f', 2, 64), Adjustment: adjustment7, AdjustmentType: adjustmentType7, AmountPaid: strconv.FormatFloat(amtPaid7, 'f', 2, 64)}
 	p7, _ := json.Marshal(pop7)
 	buffer.WriteString(string(p7))
 	buffer.WriteString(",")
@@ -1399,7 +1430,7 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	amtPaid8 := calcAmountPaid(avaiFund8, amtOwed8, adjustment8)
 	arr = append(arr, amtPaid8)
 
-	pop8 := PriorityOfPayments{Key: "fifth, to the Class A1 Notes, to pay the Interest Payment Amount thereon;", AvailableFunds: strconv.FormatFloat(avaiFund8, 'E', -1, 64), AmountOwed: strconv.FormatFloat(amtOwed8, 'E', -1, 64), Adjustment: adjustment8, AdjustmentType: adjustmentType8, AmountPaid: strconv.FormatFloat(amtPaid8, 'E', -1, 64)}
+	pop8 := PriorityOfPayments{Key: "fifth, to the Class A1 Notes, to pay the Interest Payment Amount thereon;", AvailableFunds: strconv.FormatFloat(avaiFund8, 'f', 2, 64), AmountOwed: strconv.FormatFloat(amtOwed8, 'f', 2, 64), Adjustment: adjustment8, AdjustmentType: adjustmentType8, AmountPaid: strconv.FormatFloat(amtPaid8, 'f', 2, 64)}
 	p8, _ := json.Marshal(pop8)
 	buffer.WriteString(string(p8))
 	buffer.WriteString(",")
@@ -1411,7 +1442,7 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	amtPaid9 := calcAmountPaid(avaiFund9, amtOwed9, adjustment9)
 	arr = append(arr, amtPaid9)
 
-	pop9 := PriorityOfPayments{Key: "sixth, to the Class A2 Notes, to pay the Interest Payment Amount thereon;", AvailableFunds: strconv.FormatFloat(avaiFund9, 'E', -1, 64), AmountOwed: strconv.FormatFloat(amtOwed9, 'E', -1, 64), Adjustment: adjustment9, AdjustmentType: adjustmentType9, AmountPaid: strconv.FormatFloat(amtPaid9, 'E', -1, 64)}
+	pop9 := PriorityOfPayments{Key: "sixth, to the Class A2 Notes, to pay the Interest Payment Amount thereon;", AvailableFunds: strconv.FormatFloat(avaiFund9, 'f', 2, 64), AmountOwed: strconv.FormatFloat(amtOwed9, 'f', 2, 64), Adjustment: adjustment9, AdjustmentType: adjustmentType9, AmountPaid: strconv.FormatFloat(amtPaid9, 'f', 2, 64)}
 	p9, _ := json.Marshal(pop9)
 	buffer.WriteString(string(p9))
 	buffer.WriteString(",")
@@ -1431,31 +1462,31 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 		adjustment11 = adjustment12 * amtOwed11 / amtOwed12
 	}
 
-	adjustmentType10 := calcAdjustmentType(strconv.FormatFloat(adjustment10, 'E', -1, 64))
-	adjustmentType11 := calcAdjustmentType(strconv.FormatFloat(adjustment11, 'E', -1, 64))
+	adjustmentType10 := calcAdjustmentType(strconv.FormatFloat(adjustment10, 'f', 2, 64))
+	adjustmentType11 := calcAdjustmentType(strconv.FormatFloat(adjustment11, 'f', 2, 64))
 
-	amtPaid10 := calcAmountPaid(avaiFund10, amtOwed10, strconv.FormatFloat(adjustment10, 'E', -1, 64))
+	amtPaid10 := calcAmountPaid(avaiFund10, amtOwed10, strconv.FormatFloat(adjustment10, 'f', 2, 64))
 	arr = append(arr, amtPaid10)
 
-	pop10 := PriorityOfPayments{Key: "seventh, (a) if a Class A Sequential Pay Trigger Event is not in effect, to pay principal on the Class A1	Notes and the Class A2 Notes, pro rata, based on the Note Amounts thereof outstanding as of the related	Payment Date, up to the Optimal Principal Payment Amount for such Payment Date, until the Note Amounts thereof have been reduced to zero, or (b) if a Class A Sequential Pay Trigger Event is in effect, in an amount up to the Class A Target Amount, first, to pay principal on the Class A1 Notes, until the	Note Amount thereof has been reduced to zero, and second, to pay principal on the Class A2 Notes, until	the Note Amount thereof has been reduced to zero;	A1 Notes", AvailableFunds: strconv.FormatFloat(avaiFund10, 'E', -1, 64), AmountOwed: strconv.FormatFloat(amtOwed10, 'E', -1, 64), Adjustment: strconv.FormatFloat(adjustment10, 'E', -1, 64), AdjustmentType: adjustmentType10, AmountPaid: strconv.FormatFloat(amtPaid10, 'E', -1, 64)}
+	pop10 := PriorityOfPayments{Key: "seventh, (a) if a Class A Sequential Pay Trigger Event is not in effect, to pay principal on the Class A1	Notes and the Class A2 Notes, pro rata, based on the Note Amounts thereof outstanding as of the related	Payment Date, up to the Optimal Principal Payment Amount for such Payment Date, until the Note Amounts thereof have been reduced to zero, or (b) if a Class A Sequential Pay Trigger Event is in effect, in an amount up to the Class A Target Amount, first, to pay principal on the Class A1 Notes, until the	Note Amount thereof has been reduced to zero, and second, to pay principal on the Class A2 Notes, until	the Note Amount thereof has been reduced to zero;	A1 Notes", AvailableFunds: strconv.FormatFloat(avaiFund10, 'f', 2, 64), AmountOwed: strconv.FormatFloat(amtOwed10, 'f', 2, 64), Adjustment: strconv.FormatFloat(adjustment10, 'f', 2, 64), AdjustmentType: adjustmentType10, AmountPaid: strconv.FormatFloat(amtPaid10, 'f', 2, 64)}
 	p10, _ := json.Marshal(pop10)
 	buffer.WriteString(string(p10))
 	buffer.WriteString(",")
 	/////////////////////////////
 	avaiFund11 := calcAvailableFund(avaiFund1, arr)
-	amtPaid11 := calcAmountPaid(avaiFund11, amtOwed11, strconv.FormatFloat(adjustment11, 'E', -1, 64))
+	amtPaid11 := calcAmountPaid(avaiFund11, amtOwed11, strconv.FormatFloat(adjustment11, 'f', 2, 64))
 	arr = append(arr, amtPaid11)
 
-	pop11 := PriorityOfPayments{Key: "A2 Notes", AvailableFunds: strconv.FormatFloat(avaiFund11, 'E', -1, 64), AmountOwed: strconv.FormatFloat(amtOwed11, 'E', -1, 64), Adjustment: strconv.FormatFloat(adjustment11, 'E', -1, 64), AdjustmentType: adjustmentType11, AmountPaid: strconv.FormatFloat(amtPaid11, 'E', -1, 64)}
+	pop11 := PriorityOfPayments{Key: "A2 Notes", AvailableFunds: strconv.FormatFloat(avaiFund11, 'f', 2, 64), AmountOwed: strconv.FormatFloat(amtOwed11, 'f', 2, 64), Adjustment: strconv.FormatFloat(adjustment11, 'f', 2, 64), AdjustmentType: adjustmentType11, AmountPaid: strconv.FormatFloat(amtPaid11, 'f', 2, 64)}
 	p11, _ := json.Marshal(pop11)
 	buffer.WriteString(string(p11))
 	buffer.WriteString(",")
 	/////////////////////////
 	avaiFund12 := calcAvailableFund(avaiFund1, arr)
-	adjustmentType12 := calcAdjustmentType(strconv.FormatFloat(adjustment12, 'E', -1, 64))
+	adjustmentType12 := calcAdjustmentType(strconv.FormatFloat(adjustment12, 'f', 2, 64))
 	amtPaid12 := amtPaid10 + amtPaid11
 
-	pop12 := PriorityOfPayments{Key: "Total:", AvailableFunds: strconv.FormatFloat(avaiFund12, 'E', -1, 64), AmountOwed: strconv.FormatFloat(amtOwed12, 'E', -1, 64), Adjustment: strconv.FormatFloat(adjustment12, 'E', -1, 64), AdjustmentType: adjustmentType12, AmountPaid: strconv.FormatFloat(amtPaid12, 'E', -1, 64)}
+	pop12 := PriorityOfPayments{Key: "Total:", AvailableFunds: strconv.FormatFloat(avaiFund12, 'f', 2, 64), AmountOwed: strconv.FormatFloat(amtOwed12, 'f', 2, 64), Adjustment: strconv.FormatFloat(adjustment12, 'f', 2, 64), AdjustmentType: adjustmentType12, AmountPaid: strconv.FormatFloat(amtPaid12, 'f', 2, 64)}
 	p12, _ := json.Marshal(pop12)
 	buffer.WriteString(string(p12))
 	buffer.WriteString(",")
@@ -1464,11 +1495,11 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	amtOwed13 := amtOwed10 - amtPaid10
 	G348 := test3
 	adjustment13 := math.Min(amtOwed13, G348)
-	adjustmentType13 := calcAdjustmentType(strconv.FormatFloat(adjustment13, 'E', -1, 64))
+	adjustmentType13 := calcAdjustmentType(strconv.FormatFloat(adjustment13, 'f', 2, 64))
 
-	amtPaid13 := calcAmountPaid(avaiFund13, amtOwed13, strconv.FormatFloat(adjustment13, 'E', -1, 64))
+	amtPaid13 := calcAmountPaid(avaiFund13, amtOwed13, strconv.FormatFloat(adjustment13, 'f', 2, 64))
 	arr = append(arr, amtPaid13)
-	pop13 := PriorityOfPayments{Key: "Pay Trigger = True	A1 Notes", AvailableFunds: strconv.FormatFloat(avaiFund13, 'E', -1, 64), AmountOwed: strconv.FormatFloat(amtOwed13, 'E', -1, 64), Adjustment: strconv.FormatFloat(adjustment13, 'E', -1, 64), AdjustmentType: adjustmentType13, AmountPaid: strconv.FormatFloat(amtPaid13, 'E', -1, 64)}
+	pop13 := PriorityOfPayments{Key: "Pay Trigger = True	A1 Notes", AvailableFunds: strconv.FormatFloat(avaiFund13, 'f', 2, 64), AmountOwed: strconv.FormatFloat(amtOwed13, 'f', 2, 64), Adjustment: strconv.FormatFloat(adjustment13, 'f', 2, 64), AdjustmentType: adjustmentType13, AmountPaid: strconv.FormatFloat(amtPaid13, 'f', 2, 64)}
 	p13, _ := json.Marshal(pop13)
 	buffer.WriteString(string(p13))
 	buffer.WriteString(",")
@@ -1476,11 +1507,11 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	avaiFund14 := calcAvailableFund(avaiFund1, arr)
 	amtOwed14 := amtOwed11 - amtPaid11
 	adjustment14 := math.Min(amtOwed14, G348-amtPaid13)
-	adjustmentType14 := calcAdjustmentType(strconv.FormatFloat(adjustment14, 'E', -1, 64))
-	amtPaid14 := calcAmountPaid(avaiFund14, amtOwed14, strconv.FormatFloat(adjustment14, 'E', -1, 64))
+	adjustmentType14 := calcAdjustmentType(strconv.FormatFloat(adjustment14, 'f', 2, 64))
+	amtPaid14 := calcAmountPaid(avaiFund14, amtOwed14, strconv.FormatFloat(adjustment14, 'f', 2, 64))
 
 	arr = append(arr, amtPaid14)
-	pop14 := PriorityOfPayments{Key: "A2 Notes", AvailableFunds: strconv.FormatFloat(avaiFund14, 'E', -1, 64), AmountOwed: strconv.FormatFloat(amtOwed14, 'E', -1, 64), Adjustment: strconv.FormatFloat(adjustment14, 'E', -1, 64), AdjustmentType: adjustmentType14, AmountPaid: strconv.FormatFloat(amtPaid14, 'E', -1, 64)}
+	pop14 := PriorityOfPayments{Key: "A2 Notes", AvailableFunds: strconv.FormatFloat(avaiFund14, 'f', 2, 64), AmountOwed: strconv.FormatFloat(amtOwed14, 'f', 2, 64), Adjustment: strconv.FormatFloat(adjustment14, 'f', 2, 64), AdjustmentType: adjustmentType14, AmountPaid: strconv.FormatFloat(amtPaid14, 'f', 2, 64)}
 	p14, _ := json.Marshal(pop14)
 	buffer.WriteString(string(p14))
 	buffer.WriteString(",")
@@ -1488,11 +1519,11 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	avaiFund15 := calcAvailableFund(avaiFund1, arr)
 	amtOwed15 := amtOwed13 + amtOwed14
 	adjustment15 := G348
-	adjustmentType15 := calcAdjustmentType(strconv.FormatFloat(adjustment15, 'E', -1, 64))
+	adjustmentType15 := calcAdjustmentType(strconv.FormatFloat(adjustment15, 'f', 2, 64))
 	amtPaid15 := amtPaid13 + amtPaid14
 
 	//arr = append(arr, amtPaid15)
-	pop15 := PriorityOfPayments{Key: "Total:", AvailableFunds: strconv.FormatFloat(avaiFund15, 'E', -1, 64), AmountOwed: strconv.FormatFloat(amtOwed15, 'E', -1, 64), Adjustment: strconv.FormatFloat(adjustment15, 'E', -1, 64), AdjustmentType: adjustmentType15, AmountPaid: strconv.FormatFloat(amtPaid15, 'E', -1, 64)}
+	pop15 := PriorityOfPayments{Key: "Total:", AvailableFunds: strconv.FormatFloat(avaiFund15, 'f', 2, 64), AmountOwed: strconv.FormatFloat(amtOwed15, 'f', 2, 64), Adjustment: strconv.FormatFloat(adjustment15, 'f', 2, 64), AdjustmentType: adjustmentType15, AmountPaid: strconv.FormatFloat(amtPaid15, 'f', 2, 64)}
 	p15, _ := json.Marshal(pop15)
 	buffer.WriteString(string(p15))
 	buffer.WriteString(",")
@@ -1500,11 +1531,11 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	avaiFund16 := calcAvailableFund(avaiFund1, arr)
 	amtOwed16 := amtOwed3 - amtPaid3
 	adjustment16 := math.Max(0, account1-FinalRevolvEndingBal)
-	adjustmentType16 := calcAdjustmentType(strconv.FormatFloat(adjustment16, 'E', -1, 64))
-	amtPaid16 := calcAmountPaid(avaiFund16, amtOwed16, strconv.FormatFloat(adjustment16, 'E', -1, 64))
+	adjustmentType16 := calcAdjustmentType(strconv.FormatFloat(adjustment16, 'f', 2, 64))
+	amtPaid16 := calcAmountPaid(avaiFund16, amtOwed16, strconv.FormatFloat(adjustment16, 'f', 2, 64))
 
 	arr = append(arr, amtPaid16)
-	pop16 := PriorityOfPayments{Key: "eighth, pro rata, to the Indenture Trustee, the Owner Trustee, the Paying Agent, the Note Registrar, the Servicer, the Custodian and the Asset Manager, any amounts not paid to such parties as a result of the Annual Cap;", AvailableFunds: strconv.FormatFloat(avaiFund16, 'E', -1, 64), AmountOwed: strconv.FormatFloat(amtOwed16, 'E', -1, 64), Adjustment: strconv.FormatFloat(adjustment16, 'E', -1, 64), AdjustmentType: adjustmentType16, AmountPaid: strconv.FormatFloat(amtPaid16, 'E', -1, 64)}
+	pop16 := PriorityOfPayments{Key: "eighth, pro rata, to the Indenture Trustee, the Owner Trustee, the Paying Agent, the Note Registrar, the Servicer, the Custodian and the Asset Manager, any amounts not paid to such parties as a result of the Annual Cap;", AvailableFunds: strconv.FormatFloat(avaiFund16, 'f', 2, 64), AmountOwed: strconv.FormatFloat(amtOwed16, 'f', 2, 64), Adjustment: strconv.FormatFloat(adjustment16, 'f', 2, 64), AdjustmentType: adjustmentType16, AmountPaid: strconv.FormatFloat(amtPaid16, 'f', 2, 64)}
 	p16, _ := json.Marshal(pop16)
 	buffer.WriteString(string(p16))
 	buffer.WriteString(",")
@@ -1512,11 +1543,11 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	avaiFund17 := calcAvailableFund(avaiFund1, arr)
 	adjustment17 := math.Max(0, account2-FinalResEndingBal)
 	amtOwed17 := adjustment17
-	adjustmentType17 := calcAdjustmentType(strconv.FormatFloat(adjustment17, 'E', -1, 64))
-	amtPaid17 := calcAmountPaid(avaiFund17, amtOwed17, strconv.FormatFloat(adjustment17, 'E', -1, 64))
+	adjustmentType17 := calcAdjustmentType(strconv.FormatFloat(adjustment17, 'f', 2, 64))
+	amtPaid17 := calcAmountPaid(avaiFund17, amtOwed17, strconv.FormatFloat(adjustment17, 'f', 2, 64))
 
 	arr = append(arr, amtPaid17)
-	pop17 := PriorityOfPayments{Key: "ninth, to the Reserve Account, up to an amount equal to the Required Reserve Account Balance;", AvailableFunds: strconv.FormatFloat(avaiFund17, 'E', -1, 64), AmountOwed: strconv.FormatFloat(amtOwed17, 'E', -1, 64), Adjustment: strconv.FormatFloat(adjustment17, 'E', -1, 64), AdjustmentType: adjustmentType17, AmountPaid: strconv.FormatFloat(amtPaid17, 'E', -1, 64)}
+	pop17 := PriorityOfPayments{Key: "ninth, to the Reserve Account, up to an amount equal to the Required Reserve Account Balance;", AvailableFunds: strconv.FormatFloat(avaiFund17, 'f', 2, 64), AmountOwed: strconv.FormatFloat(amtOwed17, 'f', 2, 64), Adjustment: strconv.FormatFloat(adjustment17, 'f', 2, 64), AdjustmentType: adjustmentType17, AmountPaid: strconv.FormatFloat(amtPaid17, 'f', 2, 64)}
 	p17, _ := json.Marshal(pop17)
 	buffer.WriteString(string(p17))
 	buffer.WriteString(",")
@@ -1524,11 +1555,11 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	avaiFund18 := calcAvailableFund(avaiFund1, arr)
 	adjustment18 := adjustment16
 	amtOwed18 := adjustment18
-	adjustmentType18 := calcAdjustmentType(strconv.FormatFloat(adjustment18, 'E', -1, 64))
-	amtPaid18 := calcAmountPaid(avaiFund18, amtOwed18, strconv.FormatFloat(adjustment18, 'E', -1, 64))
+	adjustmentType18 := calcAdjustmentType(strconv.FormatFloat(adjustment18, 'f', 2, 64))
+	amtPaid18 := calcAmountPaid(avaiFund18, amtOwed18, strconv.FormatFloat(adjustment18, 'f', 2, 64))
 
 	arr = append(arr, amtPaid18)
-	pop18 := PriorityOfPayments{Key: "tenth, to the Revolving Period Reinvestment Account, up to an amount equal to the Optimal Revolving Period Reinvestment Account Balance; and", AvailableFunds: strconv.FormatFloat(avaiFund18, 'E', -1, 64), AmountOwed: strconv.FormatFloat(amtOwed18, 'E', -1, 64), Adjustment: strconv.FormatFloat(adjustment18, 'E', -1, 64), AdjustmentType: adjustmentType18, AmountPaid: strconv.FormatFloat(amtPaid18, 'E', -1, 64)}
+	pop18 := PriorityOfPayments{Key: "tenth, to the Revolving Period Reinvestment Account, up to an amount equal to the Optimal Revolving Period Reinvestment Account Balance; and", AvailableFunds: strconv.FormatFloat(avaiFund18, 'f', 2, 64), AmountOwed: strconv.FormatFloat(amtOwed18, 'f', 2, 64), Adjustment: strconv.FormatFloat(adjustment18, 'f', 2, 64), AdjustmentType: adjustmentType18, AmountPaid: strconv.FormatFloat(amtPaid18, 'f', 2, 64)}
 	p18, _ := json.Marshal(pop18)
 	buffer.WriteString(string(p18))
 	buffer.WriteString(",")
@@ -1540,7 +1571,7 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	amtPaid19 := calcAmountPaid(avaiFund19, amtOwed19, adjustment19)
 
 	arr = append(arr, amtPaid19)
-	pop19 := PriorityOfPayments{Key: "eleventh, to the Class C Notes, any remaining amounts.", AvailableFunds: strconv.FormatFloat(avaiFund19, 'E', -1, 64), AmountOwed: strconv.FormatFloat(amtOwed19, 'E', -1, 64), Adjustment: adjustment19, AdjustmentType: adjustmentType19, AmountPaid: strconv.FormatFloat(amtPaid19, 'E', -1, 64)}
+	pop19 := PriorityOfPayments{Key: "eleventh, to the Class C Notes, any remaining amounts.", AvailableFunds: strconv.FormatFloat(avaiFund19, 'f', 2, 64), AmountOwed: strconv.FormatFloat(amtOwed19, 'f', 2, 64), Adjustment: adjustment19, AdjustmentType: adjustmentType19, AmountPaid: strconv.FormatFloat(amtPaid19, 'f', 2, 64)}
 	p19, _ := json.Marshal(pop19)
 	buffer.WriteString(string(p19))
 	buffer.WriteString(",")
@@ -1554,7 +1585,7 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	adjustmentType20 := calcAdjustmentType(adjustment20)
 	amtPaid20 := calcAmountPaid(avaiFund20, amtOwed20, adjustment20)
 
-	pop20 := PriorityOfPayments{Key: "Ending Balance", AvailableFunds: strconv.FormatFloat(avaiFund20, 'E', -1, 64), AmountOwed: strconv.FormatFloat(amtOwed20, 'E', -1, 64), Adjustment: adjustment20, AdjustmentType: adjustmentType20, AmountPaid: strconv.FormatFloat(amtPaid20, 'E', -1, 64)}
+	pop20 := PriorityOfPayments{Key: "Ending Balance", AvailableFunds: strconv.FormatFloat(avaiFund20, 'f', 2, 64), AmountOwed: strconv.FormatFloat(amtOwed20, 'f', 2, 64), Adjustment: adjustment20, AdjustmentType: adjustmentType20, AmountPaid: strconv.FormatFloat(amtPaid20, 'f', 2, 64)}
 	p20, _ := json.Marshal(pop20)
 	buffer.WriteString(string(p20))
 	buffer.WriteString("]")
@@ -1663,77 +1694,77 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	TotalBegUnpaid := BUnpaid1 + BUnpaid2 + BUnpaid3 + BUnpaid4 + BUnpaid5 + BUnpaid6 + BUnpaid7 + BUnpaid8 + BUnpaid9 + BUnpaid10 + BUnpaid11 + BUnpaid12 + BUnpaid13 + BUnpaid14
 	buffer.WriteString(",\"DealFeesAndExpenses\":[")
 
-	dfe1 := DealFeesAndExpenses{Fee: "Owner Trustee", Type: "Fee", BeginningUnpaid: strconv.FormatFloat(BUnpaid1, 'E', -1, 64), CurrentDue: strconv.FormatFloat(CDue1, 'E', -1, 64), TotalDue: strconv.FormatFloat(TDue1, 'E', -1, 64), TotalPaid: strconv.FormatFloat(TPaid1, 'E', -1, 64), EndingUnpaid: strconv.FormatFloat(EUnpaid1, 'E', -1, 64)}
+	dfe1 := DealFeesAndExpenses{Fee: "Owner Trustee", Type: "Fee", BeginningUnpaid: strconv.FormatFloat(BUnpaid1, 'f', 2, 64), CurrentDue: strconv.FormatFloat(CDue1, 'f', 2, 64), TotalDue: strconv.FormatFloat(TDue1, 'f', 2, 64), TotalPaid: strconv.FormatFloat(TPaid1, 'f', 2, 64), EndingUnpaid: strconv.FormatFloat(EUnpaid1, 'f', 2, 64)}
 	dd1, _ := json.Marshal(dfe1)
 	buffer.WriteString(string(dd1))
 	buffer.WriteString(",")
 
-	dfe2 := DealFeesAndExpenses{Fee: "Indenture Trustee Fee", Type: "Fee", BeginningUnpaid: strconv.FormatFloat(BUnpaid2, 'E', -1, 64), CurrentDue: strconv.FormatFloat(CDue2, 'E', -1, 64), TotalDue: strconv.FormatFloat(TDue2, 'E', -1, 64), TotalPaid: strconv.FormatFloat(TPaid2, 'E', -1, 64), EndingUnpaid: strconv.FormatFloat(EUnpaid2, 'E', -1, 64)}
+	dfe2 := DealFeesAndExpenses{Fee: "Indenture Trustee Fee", Type: "Fee", BeginningUnpaid: strconv.FormatFloat(BUnpaid2, 'f', 2, 64), CurrentDue: strconv.FormatFloat(CDue2, 'f', 2, 64), TotalDue: strconv.FormatFloat(TDue2, 'f', 2, 64), TotalPaid: strconv.FormatFloat(TPaid2, 'f', 2, 64), EndingUnpaid: strconv.FormatFloat(EUnpaid2, 'f', 2, 64)}
 	dd2, _ := json.Marshal(dfe2)
 	buffer.WriteString(string(dd2))
 	buffer.WriteString(",")
 
-	dfe3 := DealFeesAndExpenses{Fee: "Paying Agent", Type: "Fee", BeginningUnpaid: strconv.FormatFloat(BUnpaid3, 'E', -1, 64), CurrentDue: strconv.FormatFloat(CDue3, 'E', -1, 64), TotalDue: strconv.FormatFloat(TDue3, 'E', -1, 64), TotalPaid: strconv.FormatFloat(TPaid3, 'E', -1, 64), EndingUnpaid: strconv.FormatFloat(EUnpaid3, 'E', -1, 64)}
+	dfe3 := DealFeesAndExpenses{Fee: "Paying Agent", Type: "Fee", BeginningUnpaid: strconv.FormatFloat(BUnpaid3, 'f', 2, 64), CurrentDue: strconv.FormatFloat(CDue3, 'f', 2, 64), TotalDue: strconv.FormatFloat(TDue3, 'f', 2, 64), TotalPaid: strconv.FormatFloat(TPaid3, 'f', 2, 64), EndingUnpaid: strconv.FormatFloat(EUnpaid3, 'f', 2, 64)}
 	dd3, _ := json.Marshal(dfe3)
 	buffer.WriteString(string(dd3))
 	buffer.WriteString(",")
 
-	dfe4 := DealFeesAndExpenses{Fee: "Custodian", Type: "Fee", BeginningUnpaid: strconv.FormatFloat(BUnpaid4, 'E', -1, 64), CurrentDue: strconv.FormatFloat(CDue4, 'E', -1, 64), TotalDue: strconv.FormatFloat(TDue4, 'E', -1, 64), TotalPaid: strconv.FormatFloat(TPaid4, 'E', -1, 64), EndingUnpaid: strconv.FormatFloat(EUnpaid4, 'E', -1, 64)}
+	dfe4 := DealFeesAndExpenses{Fee: "Custodian", Type: "Fee", BeginningUnpaid: strconv.FormatFloat(BUnpaid4, 'f', 2, 64), CurrentDue: strconv.FormatFloat(CDue4, 'f', 2, 64), TotalDue: strconv.FormatFloat(TDue4, 'f', 2, 64), TotalPaid: strconv.FormatFloat(TPaid4, 'f', 2, 64), EndingUnpaid: strconv.FormatFloat(EUnpaid4, 'f', 2, 64)}
 	dd4, _ := json.Marshal(dfe4)
 	buffer.WriteString(string(dd4))
 	buffer.WriteString(",")
 
-	dfe5 := DealFeesAndExpenses{Fee: "Administrator", Type: "Fee", BeginningUnpaid: strconv.FormatFloat(BUnpaid5, 'E', -1, 64), CurrentDue: strconv.FormatFloat(CDue5, 'E', -1, 64), TotalDue: strconv.FormatFloat(TDue5, 'E', -1, 64), TotalPaid: strconv.FormatFloat(TPaid5, 'E', -1, 64), EndingUnpaid: strconv.FormatFloat(EUnpaid5, 'E', -1, 64)}
+	dfe5 := DealFeesAndExpenses{Fee: "Administrator", Type: "Fee", BeginningUnpaid: strconv.FormatFloat(BUnpaid5, 'f', 2, 64), CurrentDue: strconv.FormatFloat(CDue5, 'f', 2, 64), TotalDue: strconv.FormatFloat(TDue5, 'f', 2, 64), TotalPaid: strconv.FormatFloat(TPaid5, 'f', 2, 64), EndingUnpaid: strconv.FormatFloat(EUnpaid5, 'f', 2, 64)}
 	dd5, _ := json.Marshal(dfe5)
 	buffer.WriteString(string(dd5))
 	buffer.WriteString(",")
 
-	dfe6 := DealFeesAndExpenses{Fee: "Asset Manager", Type: "Fee", BeginningUnpaid: strconv.FormatFloat(BUnpaid6, 'E', -1, 64), CurrentDue: strconv.FormatFloat(CDue6, 'E', -1, 64), TotalDue: strconv.FormatFloat(TDue6, 'E', -1, 64), TotalPaid: strconv.FormatFloat(TPaid6, 'E', -1, 64), EndingUnpaid: strconv.FormatFloat(EUnpaid6, 'E', -1, 64)}
+	dfe6 := DealFeesAndExpenses{Fee: "Asset Manager", Type: "Fee", BeginningUnpaid: strconv.FormatFloat(BUnpaid6, 'f', 2, 64), CurrentDue: strconv.FormatFloat(CDue6, 'f', 2, 64), TotalDue: strconv.FormatFloat(TDue6, 'f', 2, 64), TotalPaid: strconv.FormatFloat(TPaid6, 'f', 2, 64), EndingUnpaid: strconv.FormatFloat(EUnpaid6, 'f', 2, 64)}
 	dd6, _ := json.Marshal(dfe6)
 	buffer.WriteString(string(dd6))
 	buffer.WriteString(",")
 
-	dfe7 := DealFeesAndExpenses{Fee: "Servicer", Type: "Fee", BeginningUnpaid: strconv.FormatFloat(BUnpaid7, 'E', -1, 64), CurrentDue: strconv.FormatFloat(CDue7, 'E', -1, 64), TotalDue: strconv.FormatFloat(TDue7, 'E', -1, 64), TotalPaid: strconv.FormatFloat(TPaid7, 'E', -1, 64), EndingUnpaid: strconv.FormatFloat(EUnpaid7, 'E', -1, 64)}
+	dfe7 := DealFeesAndExpenses{Fee: "Servicer", Type: "Fee", BeginningUnpaid: strconv.FormatFloat(BUnpaid7, 'f', 2, 64), CurrentDue: strconv.FormatFloat(CDue7, 'f', 2, 64), TotalDue: strconv.FormatFloat(TDue7, 'f', 2, 64), TotalPaid: strconv.FormatFloat(TPaid7, 'f', 2, 64), EndingUnpaid: strconv.FormatFloat(EUnpaid7, 'f', 2, 64)}
 	dd7, _ := json.Marshal(dfe7)
 	buffer.WriteString(string(dd7))
 	buffer.WriteString(",")
 
-	dfe8 := DealFeesAndExpenses{Fee: "Owner Trustee", Type: "Expenses", BeginningUnpaid: strconv.FormatFloat(BUnpaid8, 'E', -1, 64), CurrentDue: strconv.FormatFloat(CDue8, 'E', -1, 64), TotalDue: strconv.FormatFloat(TDue8, 'E', -1, 64), TotalPaid: strconv.FormatFloat(TPaid8, 'E', -1, 64), EndingUnpaid: strconv.FormatFloat(EUnpaid8, 'E', -1, 64)}
+	dfe8 := DealFeesAndExpenses{Fee: "Owner Trustee", Type: "Expenses", BeginningUnpaid: strconv.FormatFloat(BUnpaid8, 'f', 2, 64), CurrentDue: strconv.FormatFloat(CDue8, 'f', 2, 64), TotalDue: strconv.FormatFloat(TDue8, 'f', 2, 64), TotalPaid: strconv.FormatFloat(TPaid8, 'f', 2, 64), EndingUnpaid: strconv.FormatFloat(EUnpaid8, 'f', 2, 64)}
 	dd8, _ := json.Marshal(dfe8)
 	buffer.WriteString(string(dd8))
 	buffer.WriteString(",")
 
-	dfe9 := DealFeesAndExpenses{Fee: "Indenture Trustee", Type: "Expenses", BeginningUnpaid: strconv.FormatFloat(BUnpaid9, 'E', -1, 64), CurrentDue: strconv.FormatFloat(CDue9, 'E', -1, 64), TotalDue: strconv.FormatFloat(TDue9, 'E', -1, 64), TotalPaid: strconv.FormatFloat(TPaid9, 'E', -1, 64), EndingUnpaid: strconv.FormatFloat(EUnpaid9, 'E', -1, 64)}
+	dfe9 := DealFeesAndExpenses{Fee: "Indenture Trustee", Type: "Expenses", BeginningUnpaid: strconv.FormatFloat(BUnpaid9, 'f', 2, 64), CurrentDue: strconv.FormatFloat(CDue9, 'f', 2, 64), TotalDue: strconv.FormatFloat(TDue9, 'f', 2, 64), TotalPaid: strconv.FormatFloat(TPaid9, 'f', 2, 64), EndingUnpaid: strconv.FormatFloat(EUnpaid9, 'f', 2, 64)}
 	dd9, _ := json.Marshal(dfe9)
 	buffer.WriteString(string(dd9))
 	buffer.WriteString(",")
 
-	dfe10 := DealFeesAndExpenses{Fee: "Paying Agent", Type: "Expenses", BeginningUnpaid: strconv.FormatFloat(BUnpaid10, 'E', -1, 64), CurrentDue: strconv.FormatFloat(CDue10, 'E', -1, 64), TotalDue: strconv.FormatFloat(TDue10, 'E', -1, 64), TotalPaid: strconv.FormatFloat(TPaid10, 'E', -1, 64), EndingUnpaid: strconv.FormatFloat(EUnpaid10, 'E', -1, 64)}
+	dfe10 := DealFeesAndExpenses{Fee: "Paying Agent", Type: "Expenses", BeginningUnpaid: strconv.FormatFloat(BUnpaid10, 'f', 2, 64), CurrentDue: strconv.FormatFloat(CDue10, 'f', 2, 64), TotalDue: strconv.FormatFloat(TDue10, 'f', 2, 64), TotalPaid: strconv.FormatFloat(TPaid10, 'f', 2, 64), EndingUnpaid: strconv.FormatFloat(EUnpaid10, 'f', 2, 64)}
 	dd10, _ := json.Marshal(dfe10)
 	buffer.WriteString(string(dd10))
 	buffer.WriteString(",")
 
-	dfe14 := DealFeesAndExpenses{Fee: "Custodian", Type: "Expenses", BeginningUnpaid: strconv.FormatFloat(BUnpaid11, 'E', -1, 64), CurrentDue: strconv.FormatFloat(CDue11, 'E', -1, 64), TotalDue: strconv.FormatFloat(TDue11, 'E', -1, 64), TotalPaid: strconv.FormatFloat(TPaid11, 'E', -1, 64), EndingUnpaid: strconv.FormatFloat(EUnpaid11, 'E', -1, 64)}
+	dfe14 := DealFeesAndExpenses{Fee: "Custodian", Type: "Expenses", BeginningUnpaid: strconv.FormatFloat(BUnpaid11, 'f', 2, 64), CurrentDue: strconv.FormatFloat(CDue11, 'f', 2, 64), TotalDue: strconv.FormatFloat(TDue11, 'f', 2, 64), TotalPaid: strconv.FormatFloat(TPaid11, 'f', 2, 64), EndingUnpaid: strconv.FormatFloat(EUnpaid11, 'f', 2, 64)}
 	dd14, _ := json.Marshal(dfe14)
 	buffer.WriteString(string(dd14))
 	buffer.WriteString(",")
 
-	dfe15 := DealFeesAndExpenses{Fee: "Administrator", Type: "Expenses", BeginningUnpaid: strconv.FormatFloat(BUnpaid12, 'E', -1, 64), CurrentDue: strconv.FormatFloat(CDue12, 'E', -1, 64), TotalDue: strconv.FormatFloat(TDue12, 'E', -1, 64), TotalPaid: strconv.FormatFloat(TPaid12, 'E', -1, 64), EndingUnpaid: strconv.FormatFloat(EUnpaid12, 'E', -1, 64)}
+	dfe15 := DealFeesAndExpenses{Fee: "Administrator", Type: "Expenses", BeginningUnpaid: strconv.FormatFloat(BUnpaid12, 'f', 2, 64), CurrentDue: strconv.FormatFloat(CDue12, 'f', 2, 64), TotalDue: strconv.FormatFloat(TDue12, 'f', 2, 64), TotalPaid: strconv.FormatFloat(TPaid12, 'f', 2, 64), EndingUnpaid: strconv.FormatFloat(EUnpaid12, 'f', 2, 64)}
 	dd15, _ := json.Marshal(dfe15)
 	buffer.WriteString(string(dd15))
 	buffer.WriteString(",")
 
-	dfe16 := DealFeesAndExpenses{Fee: "Asset Manager", Type: "Expenses", BeginningUnpaid: strconv.FormatFloat(BUnpaid13, 'E', -1, 64), CurrentDue: strconv.FormatFloat(CDue13, 'E', -1, 64), TotalDue: strconv.FormatFloat(TDue13, 'E', -1, 64), TotalPaid: strconv.FormatFloat(TPaid13, 'E', -1, 64), EndingUnpaid: strconv.FormatFloat(EUnpaid13, 'E', -1, 64)}
+	dfe16 := DealFeesAndExpenses{Fee: "Asset Manager", Type: "Expenses", BeginningUnpaid: strconv.FormatFloat(BUnpaid13, 'f', 2, 64), CurrentDue: strconv.FormatFloat(CDue13, 'f', 2, 64), TotalDue: strconv.FormatFloat(TDue13, 'f', 2, 64), TotalPaid: strconv.FormatFloat(TPaid13, 'f', 2, 64), EndingUnpaid: strconv.FormatFloat(EUnpaid13, 'f', 2, 64)}
 	dd16, _ := json.Marshal(dfe16)
 	buffer.WriteString(string(dd16))
 	buffer.WriteString(",")
 
-	dfe17 := DealFeesAndExpenses{Fee: "Servicer", Type: "Expenses", BeginningUnpaid: strconv.FormatFloat(BUnpaid14, 'E', -1, 64), CurrentDue: strconv.FormatFloat(CDue14, 'E', -1, 64), TotalDue: strconv.FormatFloat(TDue14, 'E', -1, 64), TotalPaid: strconv.FormatFloat(TPaid14, 'E', -1, 64), EndingUnpaid: strconv.FormatFloat(EUnpaid14, 'E', -1, 64)}
+	dfe17 := DealFeesAndExpenses{Fee: "Servicer", Type: "Expenses", BeginningUnpaid: strconv.FormatFloat(BUnpaid14, 'f', 2, 64), CurrentDue: strconv.FormatFloat(CDue14, 'f', 2, 64), TotalDue: strconv.FormatFloat(TDue14, 'f', 2, 64), TotalPaid: strconv.FormatFloat(TPaid14, 'f', 2, 64), EndingUnpaid: strconv.FormatFloat(EUnpaid14, 'f', 2, 64)}
 	dd17, _ := json.Marshal(dfe17)
 	buffer.WriteString(string(dd17))
 	buffer.WriteString(",")
 
-	dfe13 := DealFeesAndExpenses{Fee: "Total:", Type: "", BeginningUnpaid: strconv.FormatFloat(TotalBegUnpaid, 'E', -1, 64), CurrentDue: strconv.FormatFloat(TotalCDue, 'E', -1, 64), TotalDue: strconv.FormatFloat(TotalTDue, 'E', -1, 64), TotalPaid: strconv.FormatFloat(TotalTPaid, 'E', -1, 64), EndingUnpaid: strconv.FormatFloat(TotalEUnpaid, 'E', -1, 64)}
+	dfe13 := DealFeesAndExpenses{Fee: "Total:", Type: "", BeginningUnpaid: strconv.FormatFloat(TotalBegUnpaid, 'f', 2, 64), CurrentDue: strconv.FormatFloat(TotalCDue, 'f', 2, 64), TotalDue: strconv.FormatFloat(TotalTDue, 'f', 2, 64), TotalPaid: strconv.FormatFloat(TotalTPaid, 'f', 2, 64), EndingUnpaid: strconv.FormatFloat(TotalEUnpaid, 'f', 2, 64)}
 	dd13, _ := json.Marshal(dfe13)
 	buffer.WriteString(string(dd13))
 	buffer.WriteString("]")
@@ -1762,27 +1793,27 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	iunpaidTotal := iunpaid1 + iunpaid2 + iunpaid3 + iunpaid4
 	ipsumBeginningBalance := BeginBln1 + BeginBln2 + BeginBln3 + ipBeginBln4
 
-	ipay1 := InterestPayments{Class: class1, InterestRate: strconv.FormatFloat(irate1, 'E', -1, 64) + "%", BeginningBalance: strconv.FormatFloat(BeginBln1, 'E', -1, 64), InterestOwed: strconv.FormatFloat(interestOwed1, 'E', -1, 64), InterestShortfall: strconv.FormatFloat(ifall1, 'E', -1, 64), InterestPaid: strconv.FormatFloat(ipaid1, 'E', -1, 64), InterestUnpaid: strconv.FormatFloat(iunpaid1, 'E', -1, 64)}
+	ipay1 := InterestPayments{Class: class1, InterestRate: strconv.FormatFloat(irate1, 'f', 3, 64) + "%", BeginningBalance: strconv.FormatFloat(BeginBln1, 'f', 2, 64), InterestOwed: strconv.FormatFloat(interestOwed1, 'f', 2, 64), InterestShortfall: strconv.FormatFloat(ifall1, 'f', 2, 64), InterestPaid: strconv.FormatFloat(ipaid1, 'f', 2, 64), InterestUnpaid: strconv.FormatFloat(iunpaid1, 'f', 2, 64)}
 	inp1, _ := json.Marshal(ipay1)
 	buffer.WriteString(string(inp1))
 	buffer.WriteString(",")
 
-	ipay2 := InterestPayments{Class: class2, InterestRate: strconv.FormatFloat(irate2, 'E', -1, 64) + "%", BeginningBalance: strconv.FormatFloat(BeginBln2, 'E', -1, 64), InterestOwed: strconv.FormatFloat(interestOwed2, 'E', -1, 64), InterestShortfall: strconv.FormatFloat(ifall2, 'E', -1, 64), InterestPaid: strconv.FormatFloat(ipaid2, 'E', -1, 64), InterestUnpaid: strconv.FormatFloat(iunpaid2, 'E', -1, 64)}
+	ipay2 := InterestPayments{Class: class2, InterestRate: strconv.FormatFloat(irate2, 'f', 3, 64) + "%", BeginningBalance: strconv.FormatFloat(BeginBln2, 'f', 2, 64), InterestOwed: strconv.FormatFloat(interestOwed2, 'f', 2, 64), InterestShortfall: strconv.FormatFloat(ifall2, 'f', 2, 64), InterestPaid: strconv.FormatFloat(ipaid2, 'f', 2, 64), InterestUnpaid: strconv.FormatFloat(iunpaid2, 'f', 2, 64)}
 	inp2, _ := json.Marshal(ipay2)
 	buffer.WriteString(string(inp2))
 	buffer.WriteString(",")
 
-	ipay3 := InterestPayments{Class: class3, InterestRate: strconv.FormatFloat(irate3, 'E', -1, 64) + "%", BeginningBalance: strconv.FormatFloat(BeginBln3, 'E', -1, 64), InterestOwed: strconv.FormatFloat(interestOwed3, 'E', -1, 64), InterestShortfall: strconv.FormatFloat(ifall3, 'E', -1, 64), InterestPaid: strconv.FormatFloat(ipaid3, 'E', -1, 64), InterestUnpaid: strconv.FormatFloat(iunpaid3, 'E', -1, 64)}
+	ipay3 := InterestPayments{Class: class3, InterestRate: strconv.FormatFloat(irate3, 'f', 3, 64) + "%", BeginningBalance: strconv.FormatFloat(BeginBln3, 'f', 2, 64), InterestOwed: strconv.FormatFloat(interestOwed3, 'f', 2, 64), InterestShortfall: strconv.FormatFloat(ifall3, 'f', 2, 64), InterestPaid: strconv.FormatFloat(ipaid3, 'f', 2, 64), InterestUnpaid: strconv.FormatFloat(iunpaid3, 'f', 2, 64)}
 	inp3, _ := json.Marshal(ipay3)
 	buffer.WriteString(string(inp3))
 	buffer.WriteString(",")
 
-	ipay4 := InterestPayments{Class: class4, InterestRate: strconv.FormatFloat(irate4, 'E', -1, 64) + "%", BeginningBalance: strconv.FormatFloat(ipBeginBln4, 'E', -1, 64), InterestOwed: strconv.FormatFloat(interestOwed4, 'E', -1, 64), InterestShortfall: strconv.FormatFloat(ifall4, 'E', -1, 64), InterestPaid: strconv.FormatFloat(ipaid4, 'E', -1, 64), InterestUnpaid: strconv.FormatFloat(iunpaid4, 'E', -1, 64)}
+	ipay4 := InterestPayments{Class: class4, InterestRate: strconv.FormatFloat(irate4, 'f', 3, 64) + "%", BeginningBalance: strconv.FormatFloat(ipBeginBln4, 'f', 2, 64), InterestOwed: strconv.FormatFloat(interestOwed4, 'f', 2, 64), InterestShortfall: strconv.FormatFloat(ifall4, 'f', 2, 64), InterestPaid: strconv.FormatFloat(ipaid4, 'f', 2, 64), InterestUnpaid: strconv.FormatFloat(iunpaid4, 'f', 2, 64)}
 	inp4, _ := json.Marshal(ipay4)
 	buffer.WriteString(string(inp4))
 	buffer.WriteString(",")
 
-	ipay10 := InterestPayments{Class: "Total:", InterestRate: "", BeginningBalance: strconv.FormatFloat(ipsumBeginningBalance, 'E', -1, 64), InterestOwed: strconv.FormatFloat(interestowedTotal, 'E', -1, 64), InterestShortfall: strconv.FormatFloat(ifallTotal, 'E', -1, 64), InterestPaid: strconv.FormatFloat(ipaidTotal, 'E', -1, 64), InterestUnpaid: strconv.FormatFloat(iunpaidTotal, 'E', -1, 64)}
+	ipay10 := InterestPayments{Class: "Total:", InterestRate: "", BeginningBalance: strconv.FormatFloat(ipsumBeginningBalance, 'f', 2, 64), InterestOwed: strconv.FormatFloat(interestowedTotal, 'f', 2, 64), InterestShortfall: strconv.FormatFloat(ifallTotal, 'f', 2, 64), InterestPaid: strconv.FormatFloat(ipaidTotal, 'f', 2, 64), InterestUnpaid: strconv.FormatFloat(iunpaidTotal, 'f', 2, 64)}
 	inp10, _ := json.Marshal(ipay10)
 	buffer.WriteString(string(inp10))
 	buffer.WriteString("]")
@@ -1841,27 +1872,27 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	EndingbalTotal := endbal1 + endbal2 + endbal3 + endbal4
 	SumL := L14 + L15 + L16 + L23
 
-	prin1 := PrincipalPayments{Class: class1, OriginalBalance: strconv.FormatFloat(origBln1, 'E', -1, 64), BeginningBalance: strconv.FormatFloat(BeginBln1, 'E', -1, 64), PrincipalPaid: strconv.FormatFloat(princpaid1, 'E', -1, 64), WriteDownWriteUp: strconv.FormatFloat(L14, 'E', -1, 64), EndingBalance: strconv.FormatFloat(endbal1, 'E', -1, 64)}
+	prin1 := PrincipalPayments{Class: class1, OriginalBalance: strconv.FormatFloat(origBln1, 'f', 2, 64), BeginningBalance: strconv.FormatFloat(BeginBln1, 'f', 2, 64), PrincipalPaid: strconv.FormatFloat(princpaid1, 'f', 2, 64), WriteDownWriteUp: strconv.FormatFloat(L14, 'f', 2, 64), EndingBalance: strconv.FormatFloat(endbal1, 'f', 2, 64)}
 	pr1, _ := json.Marshal(prin1)
 	buffer.WriteString(string(pr1))
 	buffer.WriteString(",")
 
-	prin2 := PrincipalPayments{Class: class2, OriginalBalance: strconv.FormatFloat(origBln2, 'E', -1, 64), BeginningBalance: strconv.FormatFloat(BeginBln2, 'E', -1, 64), PrincipalPaid: strconv.FormatFloat(princpaid2, 'E', -1, 64), WriteDownWriteUp: strconv.FormatFloat(L15, 'E', -1, 64), EndingBalance: strconv.FormatFloat(endbal2, 'E', -1, 64)}
+	prin2 := PrincipalPayments{Class: class2, OriginalBalance: strconv.FormatFloat(origBln2, 'f', 2, 64), BeginningBalance: strconv.FormatFloat(BeginBln2, 'f', 2, 64), PrincipalPaid: strconv.FormatFloat(princpaid2, 'f', 2, 64), WriteDownWriteUp: strconv.FormatFloat(L15, 'f', 2, 64), EndingBalance: strconv.FormatFloat(endbal2, 'f', 2, 64)}
 	pr2, _ := json.Marshal(prin2)
 	buffer.WriteString(string(pr2))
 	buffer.WriteString(",")
 
-	prin3 := PrincipalPayments{Class: class3, OriginalBalance: strconv.FormatFloat(origBln3, 'E', -1, 64), BeginningBalance: strconv.FormatFloat(BeginBln3, 'E', -1, 64), PrincipalPaid: strconv.FormatFloat(princpaid3, 'E', -1, 64), WriteDownWriteUp: strconv.FormatFloat(L16, 'E', -1, 64), EndingBalance: strconv.FormatFloat(endbal3, 'E', -1, 64)}
+	prin3 := PrincipalPayments{Class: class3, OriginalBalance: strconv.FormatFloat(origBln3, 'f', 2, 64), BeginningBalance: strconv.FormatFloat(BeginBln3, 'f', 2, 64), PrincipalPaid: strconv.FormatFloat(princpaid3, 'f', 2, 64), WriteDownWriteUp: strconv.FormatFloat(L16, 'f', 2, 64), EndingBalance: strconv.FormatFloat(endbal3, 'f', 2, 64)}
 	pr3, _ := json.Marshal(prin3)
 	buffer.WriteString(string(pr3))
 	buffer.WriteString(",")
 
-	prin4 := PrincipalPayments{Class: class4, OriginalBalance: strconv.FormatFloat(origBln4, 'E', -1, 64), BeginningBalance: strconv.FormatFloat(BeginBln4, 'E', -1, 64), PrincipalPaid: strconv.FormatFloat(princpaid4, 'E', -1, 64), WriteDownWriteUp: strconv.FormatFloat(L23, 'E', -1, 64), EndingBalance: strconv.FormatFloat(endbal4, 'E', -1, 64)}
+	prin4 := PrincipalPayments{Class: class4, OriginalBalance: strconv.FormatFloat(origBln4, 'f', 2, 64), BeginningBalance: strconv.FormatFloat(BeginBln4, 'f', 2, 64), PrincipalPaid: strconv.FormatFloat(princpaid4, 'f', 2, 64), WriteDownWriteUp: strconv.FormatFloat(L23, 'f', 2, 64), EndingBalance: strconv.FormatFloat(endbal4, 'f', 2, 64)}
 	pr4, _ := json.Marshal(prin4)
 	buffer.WriteString(string(pr4))
 	buffer.WriteString(",")
 
-	prin10 := PrincipalPayments{Class: "Total:", OriginalBalance: strconv.FormatFloat(OrigBalTotal, 'E', -1, 64), BeginningBalance: strconv.FormatFloat(sumBeginningBalance, 'E', -1, 64), PrincipalPaid: strconv.FormatFloat(PrincPaidTotal, 'E', -1, 64), WriteDownWriteUp: strconv.FormatFloat(SumL, 'E', -1, 64), EndingBalance: strconv.FormatFloat(EndingbalTotal, 'E', -1, 64)}
+	prin10 := PrincipalPayments{Class: "Total:", OriginalBalance: strconv.FormatFloat(OrigBalTotal, 'f', 2, 64), BeginningBalance: strconv.FormatFloat(sumBeginningBalance, 'f', 2, 64), PrincipalPaid: strconv.FormatFloat(PrincPaidTotal, 'f', 2, 64), WriteDownWriteUp: strconv.FormatFloat(SumL, 'f', 2, 64), EndingBalance: strconv.FormatFloat(EndingbalTotal, 'f', 2, 64)}
 	pr10, _ := json.Marshal(prin10)
 	buffer.WriteString(string(pr10))
 	buffer.WriteString("]")
@@ -1908,22 +1939,22 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	//Additional details calcs
 	buffer.WriteString(",\"AdditionalDetails\":[")
 
-	specadj1 := AdditionalDetails{Class: class1, BeginningCumulativeWriteDown: strconv.FormatFloat(M14, 'E', -1, 64), CumulativeWriteDownPaid: strconv.FormatFloat(N14, 'E', -1, 64), EndingCumulativeWriteDown: strconv.FormatFloat(O14, 'E', -1, 64), TotalCumulativeWACShortfall: strconv.FormatFloat(N56, 'E', -1, 64), CumulativeWACShotfallPaid: strconv.FormatFloat(O56, 'E', -1, 64), EndingCumulativeWACShortfall: strconv.FormatFloat(P56, 'E', -1, 64)}
+	specadj1 := AdditionalDetails{Class: class1, BeginningCumulativeWriteDown: strconv.FormatFloat(M14, 'f', 2, 64), CumulativeWriteDownPaid: strconv.FormatFloat(N14, 'f', 2, 64), EndingCumulativeWriteDown: strconv.FormatFloat(O14, 'f', 2, 64), TotalCumulativeWACShortfall: strconv.FormatFloat(N56, 'f', 2, 64), CumulativeWACShotfallPaid: strconv.FormatFloat(O56, 'f', 2, 64), EndingCumulativeWACShortfall: strconv.FormatFloat(P56, 'f', 2, 64)}
 	sa1, _ := json.Marshal(specadj1)
 	buffer.WriteString(string(sa1))
 	buffer.WriteString(",")
 
-	specadj2 := AdditionalDetails{Class: class2, BeginningCumulativeWriteDown: strconv.FormatFloat(M15, 'E', -1, 64), CumulativeWriteDownPaid: strconv.FormatFloat(N15, 'E', -1, 64), EndingCumulativeWriteDown: strconv.FormatFloat(O15, 'E', -1, 64), TotalCumulativeWACShortfall: strconv.FormatFloat(N57, 'E', -1, 64), CumulativeWACShotfallPaid: strconv.FormatFloat(O57, 'E', -1, 64), EndingCumulativeWACShortfall: strconv.FormatFloat(P57, 'E', -1, 64)}
+	specadj2 := AdditionalDetails{Class: class2, BeginningCumulativeWriteDown: strconv.FormatFloat(M15, 'f', 2, 64), CumulativeWriteDownPaid: strconv.FormatFloat(N15, 'f', 2, 64), EndingCumulativeWriteDown: strconv.FormatFloat(O15, 'f', 2, 64), TotalCumulativeWACShortfall: strconv.FormatFloat(N57, 'f', 2, 64), CumulativeWACShotfallPaid: strconv.FormatFloat(O57, 'f', 2, 64), EndingCumulativeWACShortfall: strconv.FormatFloat(P57, 'f', 2, 64)}
 	sa2, _ := json.Marshal(specadj2)
 	buffer.WriteString(string(sa2))
 	buffer.WriteString(",")
 
-	specadj3 := AdditionalDetails{Class: class3, BeginningCumulativeWriteDown: strconv.FormatFloat(M16, 'E', -1, 64), CumulativeWriteDownPaid: strconv.FormatFloat(N16, 'E', -1, 64), EndingCumulativeWriteDown: strconv.FormatFloat(O16, 'E', -1, 64), TotalCumulativeWACShortfall: strconv.FormatFloat(N58, 'E', -1, 64), CumulativeWACShotfallPaid: strconv.FormatFloat(O58, 'E', -1, 64), EndingCumulativeWACShortfall: strconv.FormatFloat(P58, 'E', -1, 64)}
+	specadj3 := AdditionalDetails{Class: class3, BeginningCumulativeWriteDown: strconv.FormatFloat(M16, 'f', 2, 64), CumulativeWriteDownPaid: strconv.FormatFloat(N16, 'f', 2, 64), EndingCumulativeWriteDown: strconv.FormatFloat(O16, 'f', 2, 64), TotalCumulativeWACShortfall: strconv.FormatFloat(N58, 'f', 2, 64), CumulativeWACShotfallPaid: strconv.FormatFloat(O58, 'f', 2, 64), EndingCumulativeWACShortfall: strconv.FormatFloat(P58, 'f', 2, 64)}
 	sa3, _ := json.Marshal(specadj3)
 	buffer.WriteString(string(sa3))
 	buffer.WriteString(",")
 
-	specadj4 := AdditionalDetails{Class: class4, BeginningCumulativeWriteDown: strconv.FormatFloat(M23, 'E', -1, 64), CumulativeWriteDownPaid: strconv.FormatFloat(N23, 'E', -1, 64), EndingCumulativeWriteDown: strconv.FormatFloat(O23, 'E', -1, 64), TotalCumulativeWACShortfall: strconv.FormatFloat(N65, 'E', -1, 64), CumulativeWACShotfallPaid: strconv.FormatFloat(O65, 'E', -1, 64), EndingCumulativeWACShortfall: strconv.FormatFloat(P65, 'E', -1, 64)}
+	specadj4 := AdditionalDetails{Class: class4, BeginningCumulativeWriteDown: strconv.FormatFloat(M23, 'f', 2, 64), CumulativeWriteDownPaid: strconv.FormatFloat(N23, 'f', 2, 64), EndingCumulativeWriteDown: strconv.FormatFloat(O23, 'f', 2, 64), TotalCumulativeWACShortfall: strconv.FormatFloat(N65, 'f', 2, 64), CumulativeWACShotfallPaid: strconv.FormatFloat(O65, 'f', 2, 64), EndingCumulativeWACShortfall: strconv.FormatFloat(P65, 'f', 2, 64)}
 	sa4, _ := json.Marshal(specadj4)
 	buffer.WriteString(string(sa4))
 	buffer.WriteString(",")
@@ -1935,7 +1966,7 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	TotalCWSP := O56 + O57 + O58 + O65
 	TotalEndWS := P56 + P57 + P58 + P65
 
-	specadj10 := AdditionalDetails{Class: "Total:", BeginningCumulativeWriteDown: strconv.FormatFloat(TotalBC, 'E', -1, 64), CumulativeWriteDownPaid: strconv.FormatFloat(TotalCWD, 'E', -1, 64), EndingCumulativeWriteDown: strconv.FormatFloat(TotalECWD, 'E', -1, 64), TotalCumulativeWACShortfall: strconv.FormatFloat(TotalCWS, 'E', -1, 64), CumulativeWACShotfallPaid: strconv.FormatFloat(TotalCWSP, 'E', -1, 64), EndingCumulativeWACShortfall: strconv.FormatFloat(TotalEndWS, 'E', -1, 64)}
+	specadj10 := AdditionalDetails{Class: "Total:", BeginningCumulativeWriteDown: strconv.FormatFloat(TotalBC, 'f', 2, 64), CumulativeWriteDownPaid: strconv.FormatFloat(TotalCWD, 'f', 2, 64), EndingCumulativeWriteDown: strconv.FormatFloat(TotalECWD, 'f', 2, 64), TotalCumulativeWACShortfall: strconv.FormatFloat(TotalCWS, 'f', 2, 64), CumulativeWACShotfallPaid: strconv.FormatFloat(TotalCWSP, 'f', 2, 64), EndingCumulativeWACShortfall: strconv.FormatFloat(TotalEndWS, 'f', 2, 64)}
 	sa10, _ := json.Marshal(specadj10)
 	buffer.WriteString(string(sa10))
 	buffer.WriteString("]")
@@ -1967,27 +1998,27 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	ptotalppaid := ppaid1 + ppaid2 + ppaid3 + ppaid4
 	ptotaltpaid := ptpaid1 + ptpaid2 + ptpaid3 + ptpaid4
 
-	PaySu1 := PaymentSummary{Class: class1, CUSIP: cusip1, BeginningBalance: strconv.FormatFloat(BeginBln1, 'E', -1, 64), InterestPaid: strconv.FormatFloat(pipaid1, 'E', -1, 64), PrincipalPaid: strconv.FormatFloat(ppaid1, 'E', -1, 64), TotalPaid: strconv.FormatFloat(ptpaid1, 'E', -1, 64), EndingBalance: strconv.FormatFloat(endbal1, 'E', -1, 64)}
+	PaySu1 := PaymentSummary{Class: class1, CUSIP: cusip1, BeginningBalance: strconv.FormatFloat(BeginBln1, 'f', 2, 64), InterestPaid: strconv.FormatFloat(pipaid1, 'f', 2, 64), PrincipalPaid: strconv.FormatFloat(ppaid1, 'f', 2, 64), TotalPaid: strconv.FormatFloat(ptpaid1, 'f', 2, 64), EndingBalance: strconv.FormatFloat(endbal1, 'f', 2, 64)}
 	ps1, _ := json.Marshal(PaySu1)
 	buffer.WriteString(string(ps1))
 	buffer.WriteString(",")
 
-	PaySu2 := PaymentSummary{Class: class2, CUSIP: cusip2, BeginningBalance: strconv.FormatFloat(BeginBln2, 'E', -1, 64), InterestPaid: strconv.FormatFloat(pipaid2, 'E', -1, 64), PrincipalPaid: strconv.FormatFloat(ppaid2, 'E', -1, 64), TotalPaid: strconv.FormatFloat(ptpaid2, 'E', -1, 64), EndingBalance: strconv.FormatFloat(endbal2, 'E', -1, 64)}
+	PaySu2 := PaymentSummary{Class: class2, CUSIP: cusip2, BeginningBalance: strconv.FormatFloat(BeginBln2, 'f', 2, 64), InterestPaid: strconv.FormatFloat(pipaid2, 'f', 2, 64), PrincipalPaid: strconv.FormatFloat(ppaid2, 'f', 2, 64), TotalPaid: strconv.FormatFloat(ptpaid2, 'f', 2, 64), EndingBalance: strconv.FormatFloat(endbal2, 'f', 2, 64)}
 	ps2, _ := json.Marshal(PaySu2)
 	buffer.WriteString(string(ps2))
 	buffer.WriteString(",")
 
-	PaySu3 := PaymentSummary{Class: class3, CUSIP: cusip3, BeginningBalance: strconv.FormatFloat(BeginBln3, 'E', -1, 64), InterestPaid: strconv.FormatFloat(pipaid3, 'E', -1, 64), PrincipalPaid: strconv.FormatFloat(ppaid3, 'E', -1, 64), TotalPaid: strconv.FormatFloat(ptpaid3, 'E', -1, 64), EndingBalance: strconv.FormatFloat(endbal3, 'E', -1, 64)}
+	PaySu3 := PaymentSummary{Class: class3, CUSIP: cusip3, BeginningBalance: strconv.FormatFloat(BeginBln3, 'f', 2, 64), InterestPaid: strconv.FormatFloat(pipaid3, 'f', 2, 64), PrincipalPaid: strconv.FormatFloat(ppaid3, 'f', 2, 64), TotalPaid: strconv.FormatFloat(ptpaid3, 'f', 2, 64), EndingBalance: strconv.FormatFloat(endbal3, 'f', 2, 64)}
 	ps3, _ := json.Marshal(PaySu3)
 	buffer.WriteString(string(ps3))
 	buffer.WriteString(",")
 
-	PaySu4 := PaymentSummary{Class: class4, CUSIP: cusip4, BeginningBalance: strconv.FormatFloat(BeginBln4, 'E', -1, 64), InterestPaid: strconv.FormatFloat(pipaid4, 'E', -1, 64), PrincipalPaid: strconv.FormatFloat(ppaid4, 'E', -1, 64), TotalPaid: strconv.FormatFloat(ptpaid4, 'E', -1, 64), EndingBalance: strconv.FormatFloat(endbal4, 'E', -1, 64)}
+	PaySu4 := PaymentSummary{Class: class4, CUSIP: cusip4, BeginningBalance: strconv.FormatFloat(BeginBln4, 'f', 2, 64), InterestPaid: strconv.FormatFloat(pipaid4, 'f', 2, 64), PrincipalPaid: strconv.FormatFloat(ppaid4, 'f', 2, 64), TotalPaid: strconv.FormatFloat(ptpaid4, 'f', 2, 64), EndingBalance: strconv.FormatFloat(endbal4, 'f', 2, 64)}
 	ps4, _ := json.Marshal(PaySu4)
 	buffer.WriteString(string(ps4))
 	buffer.WriteString(",")
 
-	PaySu11 := PaymentSummary{Class: "Total:", CUSIP: "", BeginningBalance: strconv.FormatFloat(sumBeginningBalance, 'E', -1, 64), InterestPaid: strconv.FormatFloat(ptotalipaid, 'E', -1, 64), PrincipalPaid: strconv.FormatFloat(ptotalppaid, 'E', -1, 64), TotalPaid: strconv.FormatFloat(ptotaltpaid, 'E', -1, 64), EndingBalance: strconv.FormatFloat(EndingbalTotal, 'E', -1, 64)}
+	PaySu11 := PaymentSummary{Class: "Total:", CUSIP: "", BeginningBalance: strconv.FormatFloat(sumBeginningBalance, 'f', 2, 64), InterestPaid: strconv.FormatFloat(ptotalipaid, 'f', 2, 64), PrincipalPaid: strconv.FormatFloat(ptotalppaid, 'f', 2, 64), TotalPaid: strconv.FormatFloat(ptotaltpaid, 'f', 2, 64), EndingBalance: strconv.FormatFloat(EndingbalTotal, 'f', 2, 64)}
 	ps11, _ := json.Marshal(PaySu11)
 	buffer.WriteString(string(ps11))
 	buffer.WriteString("]")
@@ -2026,27 +2057,27 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	payTotal4 := paytpaid1 + paytpaid2 + paytpaid3 + paytpaid4
 	payTotal5 := payendbal1 + payendbal2 + payendbal3 + payendbal4
 
-	PaySum4 := PaymentSummary1{Class: class4, CUSIP: cusip4, BeginningBalance: strconv.FormatFloat(payBegBln1, 'E', -1, 64), InterestPaid: strconv.FormatFloat(payIpaid1, 'E', -1, 64), PrincipalPaid: strconv.FormatFloat(payppaid1, 'E', -1, 64), TotalPaid: strconv.FormatFloat(paytpaid1, 'E', -1, 64), EndingBalance: strconv.FormatFloat(payendbal1, 'E', -1, 64)}
+	PaySum4 := PaymentSummary1{Class: class4, CUSIP: cusip4, BeginningBalance: strconv.FormatFloat(payBegBln1, 'f', 2, 64), InterestPaid: strconv.FormatFloat(payIpaid1, 'f', 2, 64), PrincipalPaid: strconv.FormatFloat(payppaid1, 'f', 2, 64), TotalPaid: strconv.FormatFloat(paytpaid1, 'f', 2, 64), EndingBalance: strconv.FormatFloat(payendbal1, 'f', 2, 64)}
 	psu4, _ := json.Marshal(PaySum4)
 	buffer.WriteString(string(psu4))
 	buffer.WriteString(",")
 
-	PaySum5 := PaymentSummary1{Class: class5, CUSIP: cusip5, BeginningBalance: strconv.FormatFloat(payBegBln2, 'E', -1, 64), InterestPaid: strconv.FormatFloat(payIpaid2, 'E', -1, 64), PrincipalPaid: strconv.FormatFloat(payppaid2, 'E', -1, 64), TotalPaid: strconv.FormatFloat(paytpaid2, 'E', -1, 64), EndingBalance: strconv.FormatFloat(payendbal2, 'E', -1, 64)}
+	PaySum5 := PaymentSummary1{Class: class5, CUSIP: cusip5, BeginningBalance: strconv.FormatFloat(payBegBln2, 'f', 2, 64), InterestPaid: strconv.FormatFloat(payIpaid2, 'f', 2, 64), PrincipalPaid: strconv.FormatFloat(payppaid2, 'f', 2, 64), TotalPaid: strconv.FormatFloat(paytpaid2, 'f', 2, 64), EndingBalance: strconv.FormatFloat(payendbal2, 'f', 2, 64)}
 	psu5, _ := json.Marshal(PaySum5)
 	buffer.WriteString(string(psu5))
 	buffer.WriteString(",")
 
-	PaySum6 := PaymentSummary1{Class: class6, CUSIP: cusip6, BeginningBalance: strconv.FormatFloat(payBegBln3, 'E', -1, 64), InterestPaid: strconv.FormatFloat(payIpaid3, 'E', -1, 64), PrincipalPaid: strconv.FormatFloat(payppaid3, 'E', -1, 64), TotalPaid: strconv.FormatFloat(paytpaid3, 'E', -1, 64), EndingBalance: strconv.FormatFloat(payendbal3, 'E', -1, 64)}
+	PaySum6 := PaymentSummary1{Class: class6, CUSIP: cusip6, BeginningBalance: strconv.FormatFloat(payBegBln3, 'f', 2, 64), InterestPaid: strconv.FormatFloat(payIpaid3, 'f', 2, 64), PrincipalPaid: strconv.FormatFloat(payppaid3, 'f', 2, 64), TotalPaid: strconv.FormatFloat(paytpaid3, 'f', 2, 64), EndingBalance: strconv.FormatFloat(payendbal3, 'f', 2, 64)}
 	psu6, _ := json.Marshal(PaySum6)
 	buffer.WriteString(string(psu6))
 	buffer.WriteString(",")
 
-	PaySum8 := PaymentSummary1{Class: class8, CUSIP: cusip8, BeginningBalance: strconv.FormatFloat(payBegBln4, 'E', -1, 64), InterestPaid: strconv.FormatFloat(payIpaid4, 'E', -1, 64), PrincipalPaid: strconv.FormatFloat(payppaid4, 'E', -1, 64), TotalPaid: strconv.FormatFloat(paytpaid4, 'E', -1, 64), EndingBalance: strconv.FormatFloat(payendbal4, 'E', -1, 64)}
+	PaySum8 := PaymentSummary1{Class: class8, CUSIP: cusip8, BeginningBalance: strconv.FormatFloat(payBegBln4, 'f', 2, 64), InterestPaid: strconv.FormatFloat(payIpaid4, 'f', 2, 64), PrincipalPaid: strconv.FormatFloat(payppaid4, 'f', 2, 64), TotalPaid: strconv.FormatFloat(paytpaid4, 'f', 2, 64), EndingBalance: strconv.FormatFloat(payendbal4, 'f', 2, 64)}
 	psu8, _ := json.Marshal(PaySum8)
 	buffer.WriteString(string(psu8))
 	buffer.WriteString(",")
 
-	PaySum11 := PaymentSummary1{Class: "Total:", CUSIP: "", BeginningBalance: strconv.FormatFloat(payTotal1, 'E', -1, 64), InterestPaid: strconv.FormatFloat(payTotal2, 'E', -1, 64), PrincipalPaid: strconv.FormatFloat(payTotal3, 'E', -1, 64), TotalPaid: strconv.FormatFloat(payTotal4, 'E', -1, 64), EndingBalance: strconv.FormatFloat(payTotal5, 'E', -1, 64)}
+	PaySum11 := PaymentSummary1{Class: "Total:", CUSIP: "", BeginningBalance: strconv.FormatFloat(payTotal1, 'f', 2, 64), InterestPaid: strconv.FormatFloat(payTotal2, 'f', 2, 64), PrincipalPaid: strconv.FormatFloat(payTotal3, 'f', 2, 64), TotalPaid: strconv.FormatFloat(payTotal4, 'f', 2, 64), EndingBalance: strconv.FormatFloat(payTotal5, 'f', 2, 64)}
 	psu11, _ := json.Marshal(PaySum11)
 	buffer.WriteString(string(psu11))
 	buffer.WriteString("]")
@@ -2072,11 +2103,11 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 		FTpaid1 = ""
 		FEBal1 = ""
 	} else {
-		FBegBal1 = strconv.FormatFloat(BeginBln1/deno1*1000, 'E', -1, 64)
-		FIpaid1 = strconv.FormatFloat(pipaid1/deno1*1000, 'E', -1, 64)
-		FPpaid1 = strconv.FormatFloat(ppaid1/deno1*1000, 'E', -1, 64)
-		FTpaid1 = strconv.FormatFloat(ptpaid1/deno1*1000, 'E', -1, 64)
-		FEBal1 = strconv.FormatFloat(endbal1/deno1*1000, 'E', -1, 64)
+		FBegBal1 = strconv.FormatFloat(BeginBln1/deno1*1000, 'f', 6, 64)
+		FIpaid1 = strconv.FormatFloat(pipaid1/deno1*1000, 'f', 6, 64)
+		FPpaid1 = strconv.FormatFloat(ppaid1/deno1*1000, 'f', 6, 64)
+		FTpaid1 = strconv.FormatFloat(ptpaid1/deno1*1000, 'f', 6, 64)
+		FEBal1 = strconv.FormatFloat(endbal1/deno1*1000, 'f', 6, 64)
 
 	}
 
@@ -2087,11 +2118,11 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 		FTpaid2 = ""
 		FEBal2 = ""
 	} else {
-		FBegBal2 = strconv.FormatFloat(BeginBln2/deno2*1000, 'E', -1, 64)
-		FIpaid2 = strconv.FormatFloat(pipaid2/deno2*1000, 'E', -1, 64)
-		FPpaid2 = strconv.FormatFloat(ppaid2/deno2*1000, 'E', -1, 64)
-		FTpaid2 = strconv.FormatFloat(ptpaid2/deno2*1000, 'E', -1, 64)
-		FEBal2 = strconv.FormatFloat(endbal2/deno2*1000, 'E', -1, 64)
+		FBegBal2 = strconv.FormatFloat(BeginBln2/deno2*1000, 'f', 6, 64)
+		FIpaid2 = strconv.FormatFloat(pipaid2/deno2*1000, 'f', 6, 64)
+		FPpaid2 = strconv.FormatFloat(ppaid2/deno2*1000, 'f', 6, 64)
+		FTpaid2 = strconv.FormatFloat(ptpaid2/deno2*1000, 'f', 6, 64)
+		FEBal2 = strconv.FormatFloat(endbal2/deno2*1000, 'f', 6, 64)
 
 	}
 
@@ -2102,11 +2133,11 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 		FTpaid3 = ""
 		FEBal3 = ""
 	} else {
-		FBegBal3 = strconv.FormatFloat(BeginBln3/deno3*1000, 'E', -1, 64)
-		FIpaid3 = strconv.FormatFloat(pipaid3/deno3*1000, 'E', -1, 64)
-		FPpaid3 = strconv.FormatFloat(ppaid3/deno3*1000, 'E', -1, 64)
-		FTpaid3 = strconv.FormatFloat(ptpaid3/deno3*1000, 'E', -1, 64)
-		FEBal3 = strconv.FormatFloat(endbal3/deno3*1000, 'E', -1, 64)
+		FBegBal3 = strconv.FormatFloat(BeginBln3/deno3*1000, 'f', 6, 64)
+		FIpaid3 = strconv.FormatFloat(pipaid3/deno3*1000, 'f', 6, 64)
+		FPpaid3 = strconv.FormatFloat(ppaid3/deno3*1000, 'f', 6, 64)
+		FTpaid3 = strconv.FormatFloat(ptpaid3/deno3*1000, 'f', 6, 64)
+		FEBal3 = strconv.FormatFloat(endbal3/deno3*1000, 'f', 6, 64)
 
 	}
 
@@ -2117,11 +2148,11 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 		FTpaid4 = ""
 		FEBal4 = ""
 	} else {
-		FBegBal4 = strconv.FormatFloat(ipBeginBln4/deno4*1000, 'E', -1, 64)
-		FIpaid4 = strconv.FormatFloat(pipaid4/deno4*1000, 'E', -1, 64)
-		FPpaid4 = strconv.FormatFloat(ppaid4/deno4*1000, 'E', -1, 64)
-		FTpaid4 = strconv.FormatFloat(ptpaid4/deno4*1000, 'E', -1, 64)
-		FEBal4 = strconv.FormatFloat(ipBeginBln4/deno4*1000, 'E', -1, 64)
+		FBegBal4 = strconv.FormatFloat(ipBeginBln4/deno4*1000, 'f', 6, 64)
+		FIpaid4 = strconv.FormatFloat(pipaid4/deno4*1000, 'f', 6, 64)
+		FPpaid4 = strconv.FormatFloat(ppaid4/deno4*1000, 'f', 6, 64)
+		FTpaid4 = strconv.FormatFloat(ptpaid4/deno4*1000, 'f', 6, 64)
+		FEBal4 = strconv.FormatFloat(ipBeginBln4/deno4*1000, 'f', 6, 64)
 
 	}
 
@@ -2246,19 +2277,19 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	cumprin12 := prinbal12 + cump12
 	cumprin13 := prinbal13 + cump13
 
-	collateral1 := CollateralSummary{Activity: activity1, Count: strconv.FormatFloat(count1, 'f', 0, 64), PrincipalBalance: strconv.FormatFloat(prinbal1, 'E', -1, 64), CumulativeCount: strconv.FormatFloat(cumcount1, 'f', 0, 64), CumulativePrincipalBalance: strconv.FormatFloat(cumprin1, 'E', -1, 64)}
-	collateral2 := CollateralSummary{Activity: activity2, Count: strconv.FormatFloat(count2, 'f', 0, 64), PrincipalBalance: strconv.FormatFloat(prinbal2, 'E', -1, 64), CumulativeCount: strconv.FormatFloat(cumcount2, 'f', 0, 64), CumulativePrincipalBalance: strconv.FormatFloat(cumprin2, 'E', -1, 64)}
-	collateral3 := CollateralSummary{Activity: activity3, Count: strconv.FormatFloat(count3, 'f', 0, 64), PrincipalBalance: strconv.FormatFloat(prinbal3, 'E', -1, 64), CumulativeCount: strconv.FormatFloat(cumcount3, 'f', 0, 64), CumulativePrincipalBalance: strconv.FormatFloat(cumprin3, 'E', -1, 64)}
-	collateral4 := CollateralSummary{Activity: activity4, Count: strconv.FormatFloat(count4, 'f', 0, 64), PrincipalBalance: strconv.FormatFloat(prinbal4, 'E', -1, 64), CumulativeCount: strconv.FormatFloat(cumcount4, 'f', 0, 64), CumulativePrincipalBalance: strconv.FormatFloat(cumprin4, 'E', -1, 64)}
-	collateral5 := CollateralSummary{Activity: activity5, Count: strconv.FormatFloat(count5, 'f', 0, 64), PrincipalBalance: strconv.FormatFloat(prinbal5, 'E', -1, 64), CumulativeCount: strconv.FormatFloat(cumcount5, 'f', 0, 64), CumulativePrincipalBalance: strconv.FormatFloat(cumprin5, 'E', -1, 64)}
-	collateral6 := CollateralSummary{Activity: activity6, Count: strconv.FormatFloat(count6, 'f', 0, 64), PrincipalBalance: strconv.FormatFloat(prinbal6, 'E', -1, 64), CumulativeCount: strconv.FormatFloat(cumcount6, 'f', 0, 64), CumulativePrincipalBalance: strconv.FormatFloat(cumprin6, 'E', -1, 64)}
-	collateral7 := CollateralSummary{Activity: activity7, Count: strconv.FormatFloat(count7, 'f', 0, 64), PrincipalBalance: strconv.FormatFloat(prinbal7, 'E', -1, 64), CumulativeCount: strconv.FormatFloat(cumcount7, 'f', 0, 64), CumulativePrincipalBalance: strconv.FormatFloat(cumprin7, 'E', -1, 64)}
-	collateral8 := CollateralSummary{Activity: activity8, Count: strconv.FormatFloat(count8, 'f', 0, 64), PrincipalBalance: strconv.FormatFloat(prinbal8, 'E', -1, 64), CumulativeCount: strconv.FormatFloat(cumcount8, 'f', 0, 64), CumulativePrincipalBalance: strconv.FormatFloat(cumprin8, 'E', -1, 64)}
-	collateral9 := CollateralSummary{Activity: activity9, Count: strconv.FormatFloat(count9, 'f', 0, 64), PrincipalBalance: strconv.FormatFloat(prinbal9, 'E', -1, 64), CumulativeCount: strconv.FormatFloat(cumcount9, 'f', 0, 64), CumulativePrincipalBalance: strconv.FormatFloat(cumprin9, 'E', -1, 64)}
-	collateral10 := CollateralSummary{Activity: activity10, Count: strconv.FormatFloat(count10, 'f', 0, 64), PrincipalBalance: strconv.FormatFloat(prinbal10, 'E', -1, 64), CumulativeCount: strconv.FormatFloat(cumcount10, 'f', 0, 64), CumulativePrincipalBalance: strconv.FormatFloat(cumprin10, 'E', -1, 64)}
-	collateral11 := CollateralSummary{Activity: activity11, Count: strconv.FormatFloat(count11, 'f', 0, 64), PrincipalBalance: strconv.FormatFloat(prinbal11, 'E', -1, 64), CumulativeCount: strconv.FormatFloat(cumcount11, 'f', 0, 64), CumulativePrincipalBalance: strconv.FormatFloat(cumprin11, 'E', -1, 64)}
-	collateral12 := CollateralSummary{Activity: activity12, Count: strconv.FormatFloat(count12, 'f', 0, 64), PrincipalBalance: strconv.FormatFloat(prinbal12, 'E', -1, 64), CumulativeCount: strconv.FormatFloat(cumcount12, 'f', 0, 64), CumulativePrincipalBalance: strconv.FormatFloat(cumprin12, 'E', -1, 64)}
-	collateral13 := CollateralSummary{Activity: activity13, Count: strconv.FormatFloat(count13, 'f', 0, 64), PrincipalBalance: strconv.FormatFloat(prinbal13, 'E', -1, 64), CumulativeCount: strconv.FormatFloat(cumcount13, 'f', 0, 64), CumulativePrincipalBalance: strconv.FormatFloat(cumprin13, 'E', -1, 64)}
+	collateral1 := CollateralSummary{Activity: activity1, Count: strconv.FormatFloat(count1, 'f', 0, 64), PrincipalBalance: strconv.FormatFloat(prinbal1, 'f', 2, 64), CumulativeCount: strconv.FormatFloat(cumcount1, 'f', 0, 64), CumulativePrincipalBalance: strconv.FormatFloat(cumprin1, 'f', 2, 64)}
+	collateral2 := CollateralSummary{Activity: activity2, Count: strconv.FormatFloat(count2, 'f', 0, 64), PrincipalBalance: strconv.FormatFloat(prinbal2, 'f', 2, 64), CumulativeCount: strconv.FormatFloat(cumcount2, 'f', 0, 64), CumulativePrincipalBalance: strconv.FormatFloat(cumprin2, 'f', 2, 64)}
+	collateral3 := CollateralSummary{Activity: activity3, Count: strconv.FormatFloat(count3, 'f', 0, 64), PrincipalBalance: strconv.FormatFloat(prinbal3, 'f', 2, 64), CumulativeCount: strconv.FormatFloat(cumcount3, 'f', 0, 64), CumulativePrincipalBalance: strconv.FormatFloat(cumprin3, 'f', 2, 64)}
+	collateral4 := CollateralSummary{Activity: activity4, Count: strconv.FormatFloat(count4, 'f', 0, 64), PrincipalBalance: strconv.FormatFloat(prinbal4, 'f', 2, 64), CumulativeCount: strconv.FormatFloat(cumcount4, 'f', 0, 64), CumulativePrincipalBalance: strconv.FormatFloat(cumprin4, 'f', 2, 64)}
+	collateral5 := CollateralSummary{Activity: activity5, Count: strconv.FormatFloat(count5, 'f', 0, 64), PrincipalBalance: strconv.FormatFloat(prinbal5, 'f', 2, 64), CumulativeCount: strconv.FormatFloat(cumcount5, 'f', 0, 64), CumulativePrincipalBalance: strconv.FormatFloat(cumprin5, 'f', 2, 64)}
+	collateral6 := CollateralSummary{Activity: activity6, Count: strconv.FormatFloat(count6, 'f', 0, 64), PrincipalBalance: strconv.FormatFloat(prinbal6, 'f', 2, 64), CumulativeCount: strconv.FormatFloat(cumcount6, 'f', 0, 64), CumulativePrincipalBalance: strconv.FormatFloat(cumprin6, 'f', 2, 64)}
+	collateral7 := CollateralSummary{Activity: activity7, Count: strconv.FormatFloat(count7, 'f', 0, 64), PrincipalBalance: strconv.FormatFloat(prinbal7, 'f', 2, 64), CumulativeCount: strconv.FormatFloat(cumcount7, 'f', 0, 64), CumulativePrincipalBalance: strconv.FormatFloat(cumprin7, 'f', 2, 64)}
+	collateral8 := CollateralSummary{Activity: activity8, Count: strconv.FormatFloat(count8, 'f', 0, 64), PrincipalBalance: strconv.FormatFloat(prinbal8, 'f', 2, 64), CumulativeCount: strconv.FormatFloat(cumcount8, 'f', 0, 64), CumulativePrincipalBalance: strconv.FormatFloat(cumprin8, 'f', 2, 64)}
+	collateral9 := CollateralSummary{Activity: activity9, Count: strconv.FormatFloat(count9, 'f', 0, 64), PrincipalBalance: strconv.FormatFloat(prinbal9, 'f', 2, 64), CumulativeCount: strconv.FormatFloat(cumcount9, 'f', 0, 64), CumulativePrincipalBalance: strconv.FormatFloat(cumprin9, 'f', 2, 64)}
+	collateral10 := CollateralSummary{Activity: activity10, Count: strconv.FormatFloat(count10, 'f', 0, 64), PrincipalBalance: strconv.FormatFloat(prinbal10, 'f', 2, 64), CumulativeCount: strconv.FormatFloat(cumcount10, 'f', 0, 64), CumulativePrincipalBalance: strconv.FormatFloat(cumprin10, 'f', 2, 64)}
+	collateral11 := CollateralSummary{Activity: activity11, Count: strconv.FormatFloat(count11, 'f', 0, 64), PrincipalBalance: strconv.FormatFloat(prinbal11, 'f', 2, 64), CumulativeCount: strconv.FormatFloat(cumcount11, 'f', 0, 64), CumulativePrincipalBalance: strconv.FormatFloat(cumprin11, 'f', 2, 64)}
+	collateral12 := CollateralSummary{Activity: activity12, Count: strconv.FormatFloat(count12, 'f', 0, 64), PrincipalBalance: strconv.FormatFloat(prinbal12, 'f', 2, 64), CumulativeCount: strconv.FormatFloat(cumcount12, 'f', 0, 64), CumulativePrincipalBalance: strconv.FormatFloat(cumprin12, 'f', 2, 64)}
+	collateral13 := CollateralSummary{Activity: activity13, Count: strconv.FormatFloat(count13, 'f', 0, 64), PrincipalBalance: strconv.FormatFloat(prinbal13, 'f', 2, 64), CumulativeCount: strconv.FormatFloat(cumcount13, 'f', 0, 64), CumulativePrincipalBalance: strconv.FormatFloat(cumprin13, 'f', 2, 64)}
 
 	c1, _ := json.Marshal(collateral1)
 	c2, _ := json.Marshal(collateral2)
@@ -2335,62 +2366,62 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 
 	pbaltotal := (pvaltotal / pvaltotal) * 100 // pbal0 + pbal1 + pbal2 + pbal3 + pbal4 + pbal5 + pbal6 + pbal7 + pbal8 + pbal9 + pbal10 + pbal11
 
-	perf1 := PerformanceDetails{Status: "Current", PrincipalBalanceD: strconv.FormatFloat(pval1, 'E', -1, 64), PrincipalBalanceP: strconv.FormatFloat(pbal1, 'E', -1, 64) + "%"}
+	perf1 := PerformanceDetails{Status: "Current", PrincipalBalanceD: strconv.FormatFloat(pval1, 'f', 2, 64), PrincipalBalanceP: strconv.FormatFloat(pbal1, 'f', 2, 64) + "%"}
 	pe1, _ := json.Marshal(perf1)
 	buffer.WriteString(string(pe1))
 	buffer.WriteString(",")
 
-	perf2 := PerformanceDetails{Status: "30-59_days_dq", PrincipalBalanceD: strconv.FormatFloat(pval2, 'E', -1, 64), PrincipalBalanceP: strconv.FormatFloat(pbal2, 'E', -1, 64) + "%"}
+	perf2 := PerformanceDetails{Status: "30-59_days_dq", PrincipalBalanceD: strconv.FormatFloat(pval2, 'f', 2, 64), PrincipalBalanceP: strconv.FormatFloat(pbal2, 'f', 2, 64) + "%"}
 	pe2, _ := json.Marshal(perf2)
 	buffer.WriteString(string(pe2))
 	buffer.WriteString(",")
 
-	perf3 := PerformanceDetails{Status: "60-89_days_dq", PrincipalBalanceD: strconv.FormatFloat(pval3, 'E', -1, 64), PrincipalBalanceP: strconv.FormatFloat(pbal3, 'E', -1, 64) + "%"}
+	perf3 := PerformanceDetails{Status: "60-89_days_dq", PrincipalBalanceD: strconv.FormatFloat(pval3, 'f', 2, 64), PrincipalBalanceP: strconv.FormatFloat(pbal3, 'f', 2, 64) + "%"}
 	pe3, _ := json.Marshal(perf3)
 	buffer.WriteString(string(pe3))
 	buffer.WriteString(",")
 
-	perf4 := PerformanceDetails{Status: "90-119_days_dq", PrincipalBalanceD: strconv.FormatFloat(pval4, 'E', -1, 64), PrincipalBalanceP: strconv.FormatFloat(pbal4, 'E', -1, 64) + "%"}
+	perf4 := PerformanceDetails{Status: "90-119_days_dq", PrincipalBalanceD: strconv.FormatFloat(pval4, 'f', 2, 64), PrincipalBalanceP: strconv.FormatFloat(pbal4, 'f', 2, 64) + "%"}
 	pe4, _ := json.Marshal(perf4)
 	buffer.WriteString(string(pe4))
 	buffer.WriteString(",")
 
-	perf5 := PerformanceDetails{Status: "120-149_days_dq", PrincipalBalanceD: strconv.FormatFloat(pval5, 'E', -1, 64), PrincipalBalanceP: strconv.FormatFloat(pbal5, 'E', -1, 64) + "%"}
+	perf5 := PerformanceDetails{Status: "120-149_days_dq", PrincipalBalanceD: strconv.FormatFloat(pval5, 'f', 2, 64), PrincipalBalanceP: strconv.FormatFloat(pbal5, 'f', 2, 64) + "%"}
 	pe5, _ := json.Marshal(perf5)
 	buffer.WriteString(string(pe5))
 	buffer.WriteString(",")
 
-	perf6 := PerformanceDetails{Status: "150-179_days_dq", PrincipalBalanceD: strconv.FormatFloat(pval6, 'E', -1, 64), PrincipalBalanceP: strconv.FormatFloat(pbal6, 'E', -1, 64) + "%"}
+	perf6 := PerformanceDetails{Status: "150-179_days_dq", PrincipalBalanceD: strconv.FormatFloat(pval6, 'f', 2, 64), PrincipalBalanceP: strconv.FormatFloat(pbal6, 'f', 2, 64) + "%"}
 	pe6, _ := json.Marshal(perf6)
 	buffer.WriteString(string(pe6))
 	buffer.WriteString(",")
 
-	perf7 := PerformanceDetails{Status: "90+_days_dq", PrincipalBalanceD: strconv.FormatFloat(pval7, 'E', -1, 64), PrincipalBalanceP: strconv.FormatFloat(pbal7, 'E', -1, 64) + "%"}
+	perf7 := PerformanceDetails{Status: "90+_days_dq", PrincipalBalanceD: strconv.FormatFloat(pval7, 'f', 2, 64), PrincipalBalanceP: strconv.FormatFloat(pbal7, 'f', 2, 64) + "%"}
 	pe7, _ := json.Marshal(perf7)
 	buffer.WriteString(string(pe7))
 	buffer.WriteString(",")
 
-	perf8 := PerformanceDetails{Status: "180+_days_dq", PrincipalBalanceD: strconv.FormatFloat(pval8, 'E', -1, 64), PrincipalBalanceP: strconv.FormatFloat(pbal8, 'E', -1, 64) + "%"}
+	perf8 := PerformanceDetails{Status: "180+_days_dq", PrincipalBalanceD: strconv.FormatFloat(pval8, 'f', 2, 64), PrincipalBalanceP: strconv.FormatFloat(pbal8, 'f', 2, 64) + "%"}
 	pe8, _ := json.Marshal(perf8)
 	buffer.WriteString(string(pe8))
 	buffer.WriteString(",")
 
-	perf9 := PerformanceDetails{Status: "reo", PrincipalBalanceD: strconv.FormatFloat(pval9, 'E', -1, 64), PrincipalBalanceP: strconv.FormatFloat(pbal9, 'E', -1, 64) + "%"}
+	perf9 := PerformanceDetails{Status: "reo", PrincipalBalanceD: strconv.FormatFloat(pval9, 'f', 2, 64), PrincipalBalanceP: strconv.FormatFloat(pbal9, 'f', 2, 64) + "%"}
 	pe9, _ := json.Marshal(perf9)
 	buffer.WriteString(string(pe9))
 	buffer.WriteString(",")
 
-	perf10 := PerformanceDetails{Status: "foreclosure", PrincipalBalanceD: strconv.FormatFloat(pval10, 'E', -1, 64), PrincipalBalanceP: strconv.FormatFloat(pbal10, 'E', -1, 64) + "%"}
+	perf10 := PerformanceDetails{Status: "foreclosure", PrincipalBalanceD: strconv.FormatFloat(pval10, 'f', 2, 64), PrincipalBalanceP: strconv.FormatFloat(pbal10, 'f', 2, 64) + "%"}
 	pe10, _ := json.Marshal(perf10)
 	buffer.WriteString(string(pe10))
 	buffer.WriteString(",")
 
-	perf11 := PerformanceDetails{Status: "forebearance", PrincipalBalanceD: strconv.FormatFloat(pval11, 'E', -1, 64), PrincipalBalanceP: strconv.FormatFloat(pbal11, 'E', -1, 64) + "%"}
+	perf11 := PerformanceDetails{Status: "forebearance", PrincipalBalanceD: strconv.FormatFloat(pval11, 'f', 2, 64), PrincipalBalanceP: strconv.FormatFloat(pbal11, 'f', 2, 64) + "%"}
 	pe11, _ := json.Marshal(perf11)
 	buffer.WriteString(string(pe11))
 	buffer.WriteString(",")
 
-	perf12 := PerformanceDetails{Status: "Total:", PrincipalBalanceD: strconv.FormatFloat(pvaltotal, 'E', -1, 64), PrincipalBalanceP: strconv.FormatFloat(pbaltotal, 'E', -1, 64) + "%"}
+	perf12 := PerformanceDetails{Status: "Total:", PrincipalBalanceD: strconv.FormatFloat(pvaltotal, 'f', 2, 64), PrincipalBalanceP: strconv.FormatFloat(pbaltotal, 'f', 2, 64) + "%"}
 	pe12, _ := json.Marshal(perf12)
 	buffer.WriteString(string(pe12))
 	buffer.WriteString("]")
@@ -2428,7 +2459,7 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 
 	for _, details1 := range mm1 {
 		endingprincipalbal, _ := strconv.ParseFloat(details1.PrincipalBalance, 64)
-		pif := PaidInFull{LoanID: details1.LoanID, PrincipalBalance: strconv.FormatFloat(endingprincipalbal, 'E', -1, 64)}
+		pif := PaidInFull{LoanID: details1.LoanID, PrincipalBalance: strconv.FormatFloat(endingprincipalbal, 'f', 2, 64)}
 		p, _ := json.Marshal(pif)
 		endPriBal1 = endPriBal1 + endingprincipalbal
 		buffer.WriteString(string(p))
@@ -2436,7 +2467,7 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	}
 
 	if len(mm1) != 0 {
-		pif1 := PaidInFull{LoanID: "Total:", PrincipalBalance: strconv.FormatFloat(endPriBal1, 'E', -1, 64)}
+		pif1 := PaidInFull{LoanID: "Total:", PrincipalBalance: strconv.FormatFloat(endPriBal1, 'f', 2, 64)}
 		pp1, _ := json.Marshal(pif1)
 		buffer.WriteString(string(pp1))
 	} else if len(mm1) == 0 {
@@ -2450,7 +2481,7 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 
 	for _, details1 := range mm2 {
 		endingprincipalbal, _ := strconv.ParseFloat(details1.PrincipalBalance, 64)
-		pif := Modified{LoanID: details1.LoanID, PrincipalBalance: strconv.FormatFloat(endingprincipalbal, 'E', -1, 64)}
+		pif := Modified{LoanID: details1.LoanID, PrincipalBalance: strconv.FormatFloat(endingprincipalbal, 'f', 2, 64)}
 		p, _ := json.Marshal(pif)
 		endPriBal2 = endPriBal2 + endingprincipalbal
 		buffer.WriteString(string(p))
@@ -2458,7 +2489,7 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	}
 
 	if len(mm2) != 0 {
-		pif1 := Modified{LoanID: "Total:", PrincipalBalance: strconv.FormatFloat(endPriBal2, 'E', -1, 64)}
+		pif1 := Modified{LoanID: "Total:", PrincipalBalance: strconv.FormatFloat(endPriBal2, 'f', 2, 64)}
 		pp1, _ := json.Marshal(pif1)
 		buffer.WriteString(string(pp1))
 	} else if len(mm2) == 0 {
@@ -2471,7 +2502,7 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 
 	for _, details1 := range mm3 {
 		endingprincipalbal, _ := strconv.ParseFloat(details1.PrincipalBalance, 64)
-		pif := Purchased{LoanID: details1.LoanID, PrincipalBalance: strconv.FormatFloat(endingprincipalbal, 'E', -1, 64)}
+		pif := Purchased{LoanID: details1.LoanID, PrincipalBalance: strconv.FormatFloat(endingprincipalbal, 'f', 2, 64)}
 		p, _ := json.Marshal(pif)
 		endPriBal3 = endPriBal3 + endingprincipalbal
 		buffer.WriteString(string(p))
@@ -2479,7 +2510,7 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	}
 
 	if len(mm3) != 0 {
-		pif1 := Purchased{LoanID: "Total:", PrincipalBalance: strconv.FormatFloat(endPriBal3, 'E', -1, 64)}
+		pif1 := Purchased{LoanID: "Total:", PrincipalBalance: strconv.FormatFloat(endPriBal3, 'f', 2, 64)}
 		pp1, _ := json.Marshal(pif1)
 		buffer.WriteString(string(pp1))
 	} else if len(mm3) == 0 {
@@ -2493,7 +2524,7 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 
 	for _, details1 := range mm4 {
 		endingprincipalbal, _ := strconv.ParseFloat(details1.PrincipalBalance, 64)
-		pif := FUnded{LoanID: details1.LoanID, PrincipalBalance: strconv.FormatFloat(endingprincipalbal, 'E', -1, 64)}
+		pif := FUnded{LoanID: details1.LoanID, PrincipalBalance: strconv.FormatFloat(endingprincipalbal, 'f', 2, 64)}
 		p, _ := json.Marshal(pif)
 		endPriBal4 = endPriBal4 + endingprincipalbal
 		buffer.WriteString(string(p))
@@ -2501,7 +2532,7 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	}
 
 	if len(mm4) != 0 {
-		pif1 := FUnded{LoanID: "Total:", PrincipalBalance: strconv.FormatFloat(endPriBal4, 'E', -1, 64)}
+		pif1 := FUnded{LoanID: "Total:", PrincipalBalance: strconv.FormatFloat(endPriBal4, 'f', 2, 64)}
 		pp1, _ := json.Marshal(pif1)
 		buffer.WriteString(string(pp1))
 	} else if len(mm4) == 0 {
@@ -2512,7 +2543,7 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	buffer.WriteString("]")
 
 	buffer.WriteString(",\"Dummy\":[")
-	dum := Dummy{Current1: strconv.FormatFloat(current1*100, 'E', -1, 64), Current2: strconv.FormatFloat(current2*100, 'E', -1, 64), AmtPaid: strconv.FormatFloat(amtPaid2, 'E', -1, 64), RevolvingPeriod: isRevolvingPeriod}
+	dum := Dummy{Current1: strconv.FormatFloat(current1*100, 'f', 2, 64), Current2: strconv.FormatFloat(current2*100, 'f', 2, 64), AmtPaid: strconv.FormatFloat(amtPaid2, 'f', 2, 64), RevolvingPeriod: isRevolvingPeriod}
 	du, _ := json.Marshal(dum)
 	buffer.WriteString(string(du))
 	buffer.WriteString("]")
@@ -2534,12 +2565,22 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	buffer.WriteString(pushbuffer("Minimum Borrower Credit Score", args[136], "600", "MIN", Status(args[136], "TRUE")))
 	additioncurrent7, _ := strconv.ParseFloat(args[137], 64)
 	buffer.WriteString(pushbuffer("Minimum Mortgage Loans with Business Purpose", strconv.FormatFloat(additioncurrent7*100, 'f', 2, 64)+"%", "100.00%", "MIN", Status(strconv.FormatFloat(additioncurrent7*100, 'f', 2, 64)+"%", "TRUE")))
-	buffer.WriteString(pushbuffer("Mortgage Loans 30+ Days Delinquent", "", "Not Permitted", "", Status("", "FALSE")))
-	buffer.WriteString(pushbuffer("Mortgage Loans Secured by Multi-family (5+ units) or Mixed-use Properties", "", "Permitted", "", Status("", "FALSE")))
-	buffer.WriteString(pushbuffer("Mortgage Loans for Ground-up or New Construction", "", "Permitted", "", Status("", "FALSE")))
+	//if monthval >= "7" && yearval >= "2021" {
 	buffer.WriteString(pushbuffer("Reigo Score", args[138], "12", "MAX", Status(args[138], "TRUE")))
+	buffer.WriteString(pushbuffer("Mortgage Loans 30+ Days Delinquent", "", "Not Permitted", "", Status("", "FALSE")))
+	//buffer.WriteString(pushbuffer("Mortgage Loans Secured by Multi-family (5+ units) or Mixed-use Properties", "", "Permitted", "", Status("", "FALSE")))
+	//buffer.WriteString(pushbuffer("Mortgage Loans for Ground-up or New Construction", "", "Permitted", "", Status("", "FALSE")))
 	buffer.WriteString(pushbuffer("Concentration Limits for Whole Mortgage Loans", "", "", "", ""))
-	buffer.WriteString(pushbuffer("Loans Secured by First Lien", "", "100.00%", "MAX", Status("", "TRUE")))
+	//buffer.WriteString(pushbuffer("Loans Secured by First Lien", "", "100.00%", "MAX", Status("", "TRUE")))
+
+	// } else {
+	// 	buffer.WriteString(pushbuffer("Mortgage Loans 30+ Days Delinquent", "", "Not Permitted", "", Status("", "FALSE")))
+	// 	buffer.WriteString(pushbuffer("Mortgage Loans Secured by Multi-family (5+ units) or Mixed-use Properties", "", "Permitted", "", Status("", "FALSE")))
+	// 	buffer.WriteString(pushbuffer("Mortgage Loans for Ground-up or New Construction", "", "Permitted", "", Status("", "FALSE")))
+	// 	buffer.WriteString(pushbuffer("Reigo Score", args[138], "12", "MAX", Status(args[138], "TRUE")))
+	// 	buffer.WriteString(pushbuffer("Concentration Limits for Whole Mortgage Loans", "", "", "", ""))
+	// 	buffer.WriteString(pushbuffer("Loans Secured by First Lien", "", "100.00%", "MAX", Status("", "TRUE")))
+	// }
 	buffer.WriteString(pushbuffer("Maximum Weighted Average Loan-to Cost Ratio", "", "82.00%", "MAX", Status("", "TRUE")))
 	buffer.WriteString(pushbuffer("Maximum Non-Zero Weighted Average Loan-to-ARV Ratio", "", "65.00%", "MAX", Status("", "TRUE")))
 	buffer.WriteString(pushbuffer("Minimum Mortgage Loans Made to Experienced Borrowers", "", "90.00%", "MIN", Status("", "FALSE")))
@@ -2555,7 +2596,7 @@ func Generatetable(stub shim.ChaincodeStubInterface, args []string) (string, err
 	buffer.WriteString(string(add))
 	buffer.WriteString("]}")
 
-	id := args[139]
+	id := args[143]
 	fmt.Println("id:::::::::::", id)
 	bb, _ := json.Marshal(buffer.String())
 
